@@ -30,6 +30,7 @@
 
 #include "stdint.h"
 #include "EventResponder.h"
+#include "HardwareSerial.h"
 
 extern uint8_t usb_enable_serial_event_processing; // from usb_inst.cpp
 
@@ -43,10 +44,10 @@ void yield(void)
 
 
 	// USB Serial - Add hack to minimize impact...
-	if (usb_enable_serial_event_processing && Serial.available()) serialEvent();
+	//if (usb_enable_serial_event_processing && Serial.available()) serialEvent();
 
 	// Current workaround until integrate with EventResponder.
-	if (HardwareSerial::serial_event_handlers_active) HardwareSerial::processSerialEvents();
+	//if (HardwareSerial::serial_event_handlers_active) HardwareSerial::processSerialEvents();
 
 	running = 0;
 	EventResponder::runFromYield();

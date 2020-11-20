@@ -1,3 +1,4 @@
+
 #include "usb_dev.h"
 #define USB_DESC_LIST_DEFINE
 #include "usb_desc.h"
@@ -12,9 +13,9 @@
 #include "usb_midi.h"
 #include "usb_audio.h"
 #include "core_pins.h" // for delay()
-#include "avr/pgmspace.h"
+#include "pgmspace.h"
 #include <string.h>
-#include "debug/printf.h"
+#include <stdint.h>
 
 //#define LOG_SIZE  20
 //uint32_t transfer_log_head=0;
@@ -121,12 +122,9 @@ FLASHMEM void usb_init(void)
 	// assume PLL3 is already running - already done by usb_pll_start() in main.c
 
 	CCM_CCGR6 |= CCM_CCGR6_USBOH3(CCM_CCGR_ON); // turn on clocks to USB peripheral
-	
-	printf("BURSTSIZE=%08lX\n", USB1_BURSTSIZE);
+
 	//USB1_BURSTSIZE = USB_BURSTSIZE_TXPBURST(4) | USB_BURSTSIZE_RXPBURST(4);
 	USB1_BURSTSIZE = 0x0404;
-	printf("BURSTSIZE=%08lX\n", USB1_BURSTSIZE);
-	printf("USB1_TXFILLTUNING=%08lX\n", USB1_TXFILLTUNING);
 
 	// Before programming this register, the PHY clocks must be enabled in registers
 	// USBPHYx_CTRLn and CCM_ANALOG_USBPHYx_PLL_480_CTRLn.
@@ -152,7 +150,6 @@ FLASHMEM void usb_init(void)
 		NVIC_CLEAR_PENDING(IRQ_USB1);
 		USBPHY1_CTRL_CLR = USBPHY_CTRL_SFTRST; // reset PHY
 		//USB1_USBSTS = USB1_USBSTS; // TODO: is this needed?
-		printf("USB reset took %d loops\n", count);
 		//delay(10);
 		//printf("\n");
 		//printf("USBPHY1_PWD=%08lX\n", USBPHY1_PWD);
@@ -732,7 +729,6 @@ static void endpoint0_complete(void)
 	// 0x2021 is CDC_SET_LINE_CODING
 	if (setup.wRequestAndType == 0x2021 && setup.wIndex == CDC_STATUS_INTERFACE) {
 		memcpy(usb_cdc_line_coding, endpoint0_buffer, 7);
-		printf("usb_cdc_line_coding, baud=%u\n", usb_cdc_line_coding[0]);
 		if (usb_cdc_line_coding[0] == 134) {
 			usb_start_sof_interrupts(NUM_INTERFACE);
 			usb_reboot_timer = 80; // TODO: 10 if only 12 Mbit/sec
@@ -742,7 +738,6 @@ static void endpoint0_complete(void)
 #ifdef CDC2_STATUS_INTERFACE
 	if (setup.wRequestAndType == 0x2021 && setup.wIndex == CDC2_STATUS_INTERFACE) {
 		memcpy(usb_cdc2_line_coding, endpoint0_buffer, 7);
-		printf("usb_cdc2_line_coding, baud=%u\n", usb_cdc2_line_coding[0]);
 		if (usb_cdc2_line_coding[0] == 134) {
 			usb_start_sof_interrupts(NUM_INTERFACE);
 			usb_reboot_timer = 80; // TODO: 10 if only 12 Mbit/sec
@@ -752,7 +747,6 @@ static void endpoint0_complete(void)
 #ifdef CDC3_STATUS_INTERFACE
 	if (setup.wRequestAndType == 0x2021 && setup.wIndex == CDC3_STATUS_INTERFACE) {
 		memcpy(usb_cdc3_line_coding, endpoint0_buffer, 7);
-		printf("usb_cdc3_line_coding, baud=%u\n", usb_cdc3_line_coding[0]);
 		if (usb_cdc3_line_coding[0] == 134) {
 			usb_start_sof_interrupts(NUM_INTERFACE);
 			usb_reboot_timer = 80; // TODO: 10 if only 12 Mbit/sec
@@ -769,7 +763,6 @@ static void endpoint0_complete(void)
 	if (setup.word1 == 0x03000921 && setup.word2 == ((4<<16)|SEREMU_INTERFACE)
 	  && endpoint0_buffer[0] == 0xA9 && endpoint0_buffer[1] == 0x45
 	  && endpoint0_buffer[2] == 0xC2 && endpoint0_buffer[3] == 0x6B) {
-		printf("seremu reboot request\n");
 		usb_start_sof_interrupts(NUM_INTERFACE);
 		usb_reboot_timer = 80; // TODO: 10 if only 12 Mbit/sec
 	}

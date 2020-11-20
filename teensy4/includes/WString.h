@@ -30,7 +30,7 @@
 
 // Not needed here, but some libs assume WString.h or Print.h
 // gives them PROGMEM and other AVR stuff.
-#include "avr/pgmspace.h"
+#include "pgmspace.h"
 
 // When compiling programs with this class, the following gcc parameters
 // dramatically increase performance and memory (RAM) efficiency, typically

@@ -111,7 +111,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
 */
 
 
-#if defined(USB_SERIAL)
+//#if defined(USB_SERIAL)
   #define VENDOR_ID		0x16C0
   #define PRODUCT_ID		0x0483
   #define DEVICE_CLASS		2	// 2 = Communication Class
@@ -137,7 +137,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define ENDPOINT3_CONFIG	ENDPOINT_RECEIVE_BULK + ENDPOINT_TRANSMIT_UNUSED
   #define ENDPOINT4_CONFIG      ENDPOINT_RECEIVE_UNUSED + ENDPOINT_TRANSMIT_BULK
 
-#elif defined(USB_DUAL_SERIAL)
+/*#elif defined(USB_DUAL_SERIAL)
   #define VENDOR_ID             0x16C0
   #define PRODUCT_ID            0x048B
   #define MANUFACTURER_NAME     {'T','e','e','n','s','y','d','u','i','n','o'}
@@ -882,7 +882,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define MTP_EVENT_SIZE	16
   #define MTP_EVENT_INTERVAL	10
 */
-  #define KEYMEDIA_INTERFACE    8	// Keyboard Media Keys
+/*  #define KEYMEDIA_INTERFACE    8	// Keyboard Media Keys
   #define KEYMEDIA_ENDPOINT     12
   #define KEYMEDIA_SIZE         8
   #define KEYMEDIA_INTERVAL     4
@@ -912,7 +912,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define ENDPOINT14_CONFIG	ENDPOINT_TRANSMIT_ISOCHRONOUS
   #define ENDPOINT15_CONFIG	ENDPOINT_TRANSMIT_ONLY
 
-#endif
+#endif*/
 
 #ifdef USB_DESC_LIST_DEFINE
 #if defined(NUM_ENDPOINTS) && NUM_ENDPOINTS > 0
