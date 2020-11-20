@@ -10,5 +10,8 @@ set(CMAKE_CXX_COMPILER_WORKS 1)
 
 project(nportable_os)
 
+add_subdirectory(teensy4)
+
 add_executable(nportable_os main.cpp)
 
+target_link_libraries(nportable_os teensy41)
