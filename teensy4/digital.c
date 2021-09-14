@@ -1,6 +1,5 @@
 
 #include "core_pins.h"
-#include "atomic.h"
 
 /*
 struct digital_pin_bitband_and_config_table_struct {
@@ -63,13 +62,15 @@ const struct digital_pin_bitband_and_config_table_struct digital_pin_to_info_PGM
 	{&CORE_PIN37_PORTREG, &CORE_PIN37_CONFIG, &CORE_PIN37_PADCONFIG, CORE_PIN37_BITMASK},
 	{&CORE_PIN38_PORTREG, &CORE_PIN38_CONFIG, &CORE_PIN38_PADCONFIG, CORE_PIN38_BITMASK},
 	{&CORE_PIN39_PORTREG, &CORE_PIN39_CONFIG, &CORE_PIN39_PADCONFIG, CORE_PIN39_BITMASK},
-//#if defined(ARDUINO_TEENSY41)
+#if CORE_NUM_DIGITAL > 40
 	{&CORE_PIN40_PORTREG, &CORE_PIN40_CONFIG, &CORE_PIN40_PADCONFIG, CORE_PIN40_BITMASK},
 	{&CORE_PIN41_PORTREG, &CORE_PIN41_CONFIG, &CORE_PIN41_PADCONFIG, CORE_PIN41_BITMASK},
 	{&CORE_PIN42_PORTREG, &CORE_PIN42_CONFIG, &CORE_PIN42_PADCONFIG, CORE_PIN42_BITMASK},
 	{&CORE_PIN43_PORTREG, &CORE_PIN43_CONFIG, &CORE_PIN43_PADCONFIG, CORE_PIN43_BITMASK},
 	{&CORE_PIN44_PORTREG, &CORE_PIN44_CONFIG, &CORE_PIN44_PADCONFIG, CORE_PIN44_BITMASK},
 	{&CORE_PIN45_PORTREG, &CORE_PIN45_CONFIG, &CORE_PIN45_PADCONFIG, CORE_PIN45_BITMASK},
+#endif
+#if CORE_NUM_DIGITAL > 46
 	{&CORE_PIN46_PORTREG, &CORE_PIN46_CONFIG, &CORE_PIN46_PADCONFIG, CORE_PIN46_BITMASK},
 	{&CORE_PIN47_PORTREG, &CORE_PIN47_CONFIG, &CORE_PIN47_PADCONFIG, CORE_PIN47_BITMASK},
 	{&CORE_PIN48_PORTREG, &CORE_PIN48_CONFIG, &CORE_PIN48_PADCONFIG, CORE_PIN48_BITMASK},
@@ -79,10 +80,37 @@ const struct digital_pin_bitband_and_config_table_struct digital_pin_to_info_PGM
 	{&CORE_PIN52_PORTREG, &CORE_PIN52_CONFIG, &CORE_PIN52_PADCONFIG, CORE_PIN52_BITMASK},
 	{&CORE_PIN53_PORTREG, &CORE_PIN53_CONFIG, &CORE_PIN53_PADCONFIG, CORE_PIN53_BITMASK},
 	{&CORE_PIN54_PORTREG, &CORE_PIN54_CONFIG, &CORE_PIN54_PADCONFIG, CORE_PIN54_BITMASK},
-//#endif
+#endif
 };
 
 void digitalWrite(uint8_t pin, uint8_t val)
+{
+	const struct digital_pin_bitband_and_config_table_struct *p;
+	uint32_t pinmode, mask;
+
+	if (pin >= CORE_NUM_DIGITAL) return;
+	p = digital_pin_to_info_PGM + pin;
+	pinmode = *(p->reg + 1);
+	mask = p->mask;
+	if (pinmode & mask) {
+		// pin is configured for output mode
+		if (val) {
+			*(p->reg + 0x21) = mask; // set register
+		} else {
+			*(p->reg + 0x22) = mask; // clear register
+		}
+	} else {
+		// pin is configured for input mode
+		// value controls PULLUP/PULLDOWN resistors
+		if (val) {
+			*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_PKE | IOMUXC_PAD_PUE | IOMUXC_PAD_PUS(3) | IOMUXC_PAD_HYS;
+		} else {
+			*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_PKE | IOMUXC_PAD_PUE | IOMUXC_PAD_PUS(0) | IOMUXC_PAD_HYS;
+		}
+	}
+}
+
+void digitalToggle(uint8_t pin)
 {
 	const struct digital_pin_bitband_and_config_table_struct *p;
 	uint32_t mask;
@@ -90,13 +118,7 @@ void digitalWrite(uint8_t pin, uint8_t val)
 	if (pin >= CORE_NUM_DIGITAL) return;
 	p = digital_pin_to_info_PGM + pin;
 	mask = p->mask;
-	ATOMIC_BLOCK(ATOMIC_FORCEON) {
-		if (val) {
-			*(p->reg + 0x21) = mask; // set register
-		} else {
-			*(p->reg + 0x22) = mask; // clear register
-		}
-	}
+	*(p->reg + 0x23) = mask; // toggle register
 }
 
 uint8_t digitalRead(uint8_t pin)
@@ -115,26 +137,22 @@ void pinMode(uint8_t pin, uint8_t mode)
 	if (pin >= CORE_NUM_DIGITAL) return;
 	p = digital_pin_to_info_PGM + pin;
 	if (mode == OUTPUT || mode == OUTPUT_OPENDRAIN) {
-		ATOMIC_BLOCK(ATOMIC_FORCEON) {
-			*(p->reg + 1) |= p->mask; // TODO: atomic
-			if (mode == OUTPUT) {
-				*(p->pad) = IOMUXC_PAD_DSE(7);
-			} else { // OUTPUT_OPENDRAIN
-				*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_ODE;
-			}
+		*(p->reg + 1) |= p->mask; // TODO: atomic
+		if (mode == OUTPUT) {
+			*(p->pad) = IOMUXC_PAD_DSE(7);
+		} else { // OUTPUT_OPENDRAIN
+			*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_ODE;
 		}
 	} else {
-		ATOMIC_BLOCK(ATOMIC_FORCEON) {
-			*(p->reg + 1) &= ~(p->mask); // TODO: atomic
-			if (mode == INPUT) {
-				*(p->pad) = IOMUXC_PAD_DSE(7);
-			} else if (mode == INPUT_PULLUP) {
-				*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_PKE | IOMUXC_PAD_PUE | IOMUXC_PAD_PUS(3) | IOMUXC_PAD_HYS;
-			} else if (mode == INPUT_PULLDOWN) {
-				*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_PKE | IOMUXC_PAD_PUE | IOMUXC_PAD_PUS(0) | IOMUXC_PAD_HYS;
-			} else { // INPUT_DISABLE
-				*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_HYS;
-			}
+		*(p->reg + 1) &= ~(p->mask); // TODO: atomic
+		if (mode == INPUT) {
+			*(p->pad) = IOMUXC_PAD_DSE(7);
+		} else if (mode == INPUT_PULLUP) {
+			*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_PKE | IOMUXC_PAD_PUE | IOMUXC_PAD_PUS(3) | IOMUXC_PAD_HYS;
+		} else if (mode == INPUT_PULLDOWN) {
+			*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_PKE | IOMUXC_PAD_PUE | IOMUXC_PAD_PUS(0) | IOMUXC_PAD_HYS;
+		} else { // INPUT_DISABLE
+			*(p->pad) = IOMUXC_PAD_DSE(7) | IOMUXC_PAD_HYS;
 		}
 	}
 	*(p->mux) = 5 | 0x10;
@@ -179,7 +197,7 @@ void shiftOut_lsbFirst(uint8_t dataPin, uint8_t clockPin, uint8_t value)
 		digitalWrite(clockPin, LOW);
 	}
 }
-/*
+
 void shiftOut_msbFirst(uint8_t dataPin, uint8_t clockPin, uint8_t value)
 {
 	uint32_t v;
@@ -277,4 +295,4 @@ uint32_t pulseIn(uint8_t pin, uint8_t state, uint32_t timeout)
 	if (pin >= CORE_NUM_DIGITAL) return 0;
 	if (state) return pulseIn_high(pin, timeout);
 	return pulseIn_low(pin, timeout);
-}*/
+}

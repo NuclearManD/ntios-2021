@@ -20,13 +20,10 @@
  parsing functions based on TextFinder library by Michael Margolis
  */
 
+#include <Arduino.h>
+
 #define PARSE_TIMEOUT 1000  // default number of milli-seconds to wait
 #define NO_SKIP_CHAR  1  // a magic char not found in a valid ASCII numeric field
-
-#include "WString.h"
-#include "Stream.h"
-#include "stdbool.h"
-#include "includes/core_pins.h"
 
 // private method to read stream with timeout
 int Stream::timedRead()
@@ -143,7 +140,7 @@ long Stream::parseInt()
 // this allows format characters (typically commas) in values to be ignored
 long Stream::parseInt(char skipChar)
 {
-  bool isNegative = false;
+  boolean isNegative = false;
   long value = 0;
   int c;
 
@@ -179,8 +176,8 @@ float Stream::parseFloat()
 // as above but the given skipChar is ignored
 // this allows format characters (typically commas) in values to be ignored
 float Stream::parseFloat(char skipChar){
-  bool isNegative = false;
-  bool isFraction = false;
+  boolean isNegative = false;
+  boolean isFraction = false;
   long value = 0;
   int c;
   float fraction = 1.0;

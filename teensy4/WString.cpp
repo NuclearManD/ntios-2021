@@ -19,9 +19,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include <stdlib.h>
-#include <string.h>
-#include "WString.h"
+#include <Arduino.h>
+
 
 /*********************************************/
 /*  Constructors                             */
@@ -175,16 +174,8 @@ String & String::copy(const char *cstr, unsigned int length)
 
 void String::move(String &rhs)
 {
-	if (buffer) {
-		if (capacity >= rhs.len) {
-			strcpy(buffer, rhs.buffer);
-			len = rhs.len;
-			rhs.len = 0;
-			return;
-		} else {
-			free(buffer);
-		}
-	}
+	if (&rhs == this) return;
+	if (buffer) free(buffer);
 	buffer = rhs.buffer;
 	capacity = rhs.capacity;
 	len = rhs.len;
@@ -484,6 +475,8 @@ unsigned char String::endsWith( const String &s2 ) const
 /*********************************************/
 /*  Character Access                         */
 /*********************************************/
+
+const char String::zerotermination = 0;
 
 char String::charAt(unsigned int loc) const
 {

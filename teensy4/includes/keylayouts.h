@@ -32,7 +32,7 @@
 #define KEYLAYOUTS_H__
 
 #include <stdint.h>
-#include <pgmspace.h>
+#include <avr/pgmspace.h>
 
 #ifdef __cplusplus
 extern "C"{
@@ -226,11 +226,13 @@ extern "C"{
 #define KEY_RIGHT_ALT	MODIFIERKEY_RIGHT_ALT
 #define KEY_RIGHT_GUI	MODIFIERKEY_RIGHT_GUI
 
+
 // Everything below this line is not intended for use in "normal" programs.
 // These private symbols populate lookup tables, which are used to translate
 // ascii and UTF8 unicode into keystroke sequences.
 
-//#ifdef LAYOUT_US_ENGLISH
+
+#ifdef LAYOUT_US_ENGLISH
 
 #define SHIFT_MASK		0x40
 #define KEYCODE_TYPE		uint8_t
@@ -333,7 +335,10 @@ extern "C"{
 #define ASCII_7E	KEY_TILDE + SHIFT_MASK			// 126 ~
 #define ASCII_7F	KEY_BACKSPACE				// 127
 
-//#endif // LAYOUT_US_ENGLISH
+#endif // LAYOUT_US_ENGLISH
+
+
+
 
 #ifdef LAYOUT_US_INTERNATIONAL
 

@@ -111,10 +111,9 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
 */
 
 
-//#if defined(USB_SERIAL)
+#if defined(USB_SERIAL)
   #define VENDOR_ID		0x16C0
   #define PRODUCT_ID		0x0483
-  #define DEVICE_CLASS		2	// 2 = Communication Class
   #define MANUFACTURER_NAME	{'T','e','e','n','s','y','d','u','i','n','o'}
   #define MANUFACTURER_NAME_LEN	11
   #define PRODUCT_NAME		{'U','S','B',' ','S','e','r','i','a','l'}
@@ -123,6 +122,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define NUM_ENDPOINTS		4
   #define NUM_USB_BUFFERS	12
   #define NUM_INTERFACE		2
+  #define CDC_IAD_DESCRIPTOR    1       // Serial
   #define CDC_STATUS_INTERFACE	0
   #define CDC_DATA_INTERFACE	1
   #define CDC_ACM_ENDPOINT	2
@@ -133,11 +133,12 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define CDC_TX_SIZE_480       512
   #define CDC_RX_SIZE_12        64
   #define CDC_TX_SIZE_12        64
+  //#define EXPERIMENTAL_INTERFACE 2
   #define ENDPOINT2_CONFIG	ENDPOINT_RECEIVE_UNUSED + ENDPOINT_TRANSMIT_INTERRUPT
   #define ENDPOINT3_CONFIG	ENDPOINT_RECEIVE_BULK + ENDPOINT_TRANSMIT_UNUSED
   #define ENDPOINT4_CONFIG      ENDPOINT_RECEIVE_UNUSED + ENDPOINT_TRANSMIT_BULK
 
-/*#elif defined(USB_DUAL_SERIAL)
+#elif defined(USB_DUAL_SERIAL)
   #define VENDOR_ID             0x16C0
   #define PRODUCT_ID            0x048B
   #define MANUFACTURER_NAME     {'T','e','e','n','s','y','d','u','i','n','o'}
@@ -691,7 +692,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define MTP_RX_SIZE_12	64
   #define MTP_RX_SIZE_480	512
   #define MTP_EVENT_ENDPOINT	4
-  #define MTP_EVENT_SIZE	16
+  #define MTP_EVENT_SIZE	32
   #define MTP_EVENT_INTERVAL_12	10	// 10 = 10 ms
   #define MTP_EVENT_INTERVAL_480 7	// 7 = 8 ms
   #define SEREMU_INTERFACE      1	// Serial emulation
@@ -703,8 +704,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define SEREMU_RX_INTERVAL    2
   #define ENDPOINT2_CONFIG	ENDPOINT_RECEIVE_INTERRUPT + ENDPOINT_TRANSMIT_INTERRUPT
   #define ENDPOINT3_CONFIG	ENDPOINT_RECEIVE_BULK + ENDPOINT_TRANSMIT_BULK
-  // TODO: Should ENDPOINT4_CONFIG be ENDPOINT_RECEIVE_UNUSED + ENDPOINT_TRANSMIT_INTERRUPT ???
-  #define ENDPOINT4_CONFIG	ENDPOINT_RECEIVE_INTERRUPT + ENDPOINT_TRANSMIT_UNUSED
+  #define ENDPOINT4_CONFIG  ENDPOINT_RECEIVE_UNUSED + ENDPOINT_TRANSMIT_INTERRUPT
 
 #elif defined(USB_AUDIO)
   #define VENDOR_ID		0x16C0
@@ -882,7 +882,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define MTP_EVENT_SIZE	16
   #define MTP_EVENT_INTERVAL	10
 */
-/*  #define KEYMEDIA_INTERFACE    8	// Keyboard Media Keys
+  #define KEYMEDIA_INTERFACE    8	// Keyboard Media Keys
   #define KEYMEDIA_ENDPOINT     12
   #define KEYMEDIA_SIZE         8
   #define KEYMEDIA_INTERVAL     4
@@ -912,7 +912,7 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define ENDPOINT14_CONFIG	ENDPOINT_TRANSMIT_ISOCHRONOUS
   #define ENDPOINT15_CONFIG	ENDPOINT_TRANSMIT_ONLY
 
-#endif*/
+#endif
 
 #ifdef USB_DESC_LIST_DEFINE
 #if defined(NUM_ENDPOINTS) && NUM_ENDPOINTS > 0

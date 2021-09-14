@@ -1,8 +1,7 @@
-
-#include <stdint.h>
 #include "imxrt.h"
 #include "core_pins.h"
-#include "pgmspace.h"
+#include "debug/printf.h"
+#include "avr/pgmspace.h"
 
 static uint8_t calibrating;
 static uint8_t analog_config_bits = 10;
@@ -38,7 +37,7 @@ const uint8_t pin_to_channel[] = { // pg 482
 	2,	// 25/A11 AD_B0_13
 	128+3,	// 26/A12 AD_B1_14 - only on ADC2, 3
 	128+4,	// 27/A13 AD_B1_15 - only on ADC2, 4
-//#ifdef ARDUINO_TEENSY41
+#ifdef ARDUINO_TEENSY41
 	255,	// 28
 	255,	// 29
 	255,	// 30
@@ -53,16 +52,18 @@ const uint8_t pin_to_channel[] = { // pg 482
 	128+2,	// 39/A15 AD_B1_13 - only on ADC2, 2
 	9,	// 40/A16 AD_B1_04
 	10,	// 41/A17 AD_B1_05
-//#endif
+#endif
 };
 
 
 static void wait_for_cal(void)
 {
+	//printf("wait_for_cal\n");
 	while (ADC1_GC & ADC_GC_CAL) ;
 	while (ADC2_GC & ADC_GC_CAL) ;
 	// TODO: check CALF, but what do to about CAL failure?
 	calibrating = 0;
+	//printf("cal complete\n");
 }
 
 
@@ -72,6 +73,7 @@ int analogRead(uint8_t pin)
 	if (calibrating) wait_for_cal();
 	uint8_t ch = pin_to_channel[pin];
 	if (ch == 255) return 0;
+//	printf("%d\n", ch);
 //	if (ch > 15) return 0;
 	if(!(ch & 0x80)) {
 		ADC1_HC0 = ch;
@@ -163,6 +165,8 @@ void analogReadAveraging(unsigned int num)
 FLASHMEM void analog_init(void)
 {
 	uint32_t mode, avg=0;
+
+	printf("analogInit\n");
 
 	CCM_CCGR1 |= CCM_CCGR1_ADC1(CCM_CCGR_ON);
 	CCM_CCGR1 |= CCM_CCGR1_ADC2(CCM_CCGR_ON);

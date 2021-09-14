@@ -28,8 +28,8 @@
  * SOFTWARE.
  */
 
+#include <Arduino.h>
 #include "usb_desc.h"
-#include "usb_serial.h"
 
 #if F_CPU >= 20000000
 
@@ -96,6 +96,4 @@ usb_seremu_class Serial;
 #endif
 
 #endif // F_CPU
-uint8_t usb_enable_serial_event_processing = 1;
-void serialEvent() __attribute__((weak));
-void serialEvent() {usb_enable_serial_event_processing = 0;}
+

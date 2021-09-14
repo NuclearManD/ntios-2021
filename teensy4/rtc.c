@@ -29,7 +29,8 @@
  */
 
 #include "imxrt.h"
-#include <stdint.h>
+#include "debug/printf.h"
+
 
 unsigned long rtc_get(void)
 {

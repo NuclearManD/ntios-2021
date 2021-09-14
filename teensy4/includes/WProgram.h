@@ -38,8 +38,8 @@
 // some libraries and sketches depend on this
 // AVR stuff, assuming Arduino.h or WProgram.h
 // automatically includes it...
-#include <pgmspace.h>
-//#include <interrupt.h>
+#include <avr/pgmspace.h>
+#include <avr/interrupt.h>
 
 #include "avr_functions.h"
 #include "wiring.h"
@@ -65,6 +65,7 @@
 #include "WString.h"
 #include "elapsedMillis.h"
 #include "IntervalTimer.h"
+#include "CrashReport.h"
 
 uint16_t makeWord(uint16_t w);
 uint16_t makeWord(byte h, byte l);

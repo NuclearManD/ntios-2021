@@ -30,7 +30,7 @@
 
 // Not needed here, but some libs assume WString.h or Print.h
 // gives them PROGMEM and other AVR stuff.
-#include "pgmspace.h"
+#include "avr/pgmspace.h"
 
 // When compiling programs with this class, the following gcc parameters
 // dramatically increase performance and memory (RAM) efficiency, typically
@@ -143,10 +143,8 @@ public:
 	//unsigned char equals(const __FlashStringHelper *pgmstr) const;
 	unsigned char operator == (const String &rhs) const {return equals(rhs);}
 	unsigned char operator == (const char *cstr) const {return equals(cstr);}
-	unsigned char operator == (const __FlashStringHelper *s) const {return equals((const char *)s);}
 	unsigned char operator != (const String &rhs) const {return !equals(rhs);}
 	unsigned char operator != (const char *cstr) const {return !equals(cstr);}
-	unsigned char operator != (const __FlashStringHelper *s) const {return !equals(s);}
 	unsigned char operator <  (const String &rhs) const;
 	unsigned char operator >  (const String &rhs) const;
 	unsigned char operator <= (const String &rhs) const;
@@ -164,7 +162,10 @@ public:
 	void getBytes(unsigned char *buf, unsigned int bufsize, unsigned int index=0) const;
 	void toCharArray(char *buf, unsigned int bufsize, unsigned int index=0) const
 		{getBytes((unsigned char *)buf, bufsize, index);}
-	const char * c_str() const { return buffer; }
+	const char * c_str() const {
+		if (!buffer) return &zerotermination; // https://forum.pjrc.com/threads/63842
+		return buffer;
+	}
 
 	// search
 	int indexOf( char ch ) const;
@@ -205,6 +206,7 @@ private:
 	// for more information http://www.artima.com/cppsource/safebool.html
 	typedef void (String::*StringIfHelperType)() const;
 	void StringIfHelper() const {}
+	static const char zerotermination;
 public:
 	operator StringIfHelperType() const { return buffer ? &String::StringIfHelper : 0; }
 };

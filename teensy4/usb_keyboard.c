@@ -33,6 +33,8 @@
 #include "core_pins.h" // for yield()
 #include "keylayouts.h"
 #include <string.h> // for memcpy()
+#include "avr/pgmspace.h" // for PROGMEM, DMAMEM, FASTRUN
+#include "debug/printf.h"
 #include "core_pins.h"
 
 #ifdef KEYBOARD_INTERFACE // defined by usb_dev.h -> usb_desc.h

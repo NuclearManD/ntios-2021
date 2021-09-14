@@ -36,7 +36,7 @@
 #include "usb_names.h"
 #include "imxrt.h"
 #include "avr_functions.h"
-//#include "avr/pgmspace.h"
+#include "avr/pgmspace.h"
 
 // At very slow CPU speeds, the OCRAM just isn't fast enough for
 // USB to work reliably.  But the precious/limited DTCM is.  So
@@ -72,6 +72,19 @@
 #define LSB(n) ((n) & 255)
 #define MSB(n) (((n) >> 8) & 255)
 
+#ifdef CDC_IAD_DESCRIPTOR
+#ifndef DEVICE_CLASS
+#define DEVICE_CLASS 0xEF
+#endif
+#ifndef DEVICE_SUBCLASS
+#define DEVICE_SUBCLASS 0x02
+#endif
+#ifndef DEVICE_PROTOCOL
+#define DEVICE_PROTOCOL 0x01
+#endif
+#endif
+
+
 // USB Device Descriptor.  The USB host reads this first, to learn
 // what type of device is connected.
 static uint8_t device_descriptor[] = {
@@ -106,6 +119,8 @@ static uint8_t device_descriptor[] = {
         0x79, 0x02, // Teensy 4.0
   #elif defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41)
         0x80, 0x02, // Teensy 4.1
+  #elif defined(__IMXRT1062__) && defined(ARDUINO_TEENSY_MICROMOD)
+        0x81, 0x02, // Teensy MicroMod
   #else
         0x00, 0x02,
   #endif
@@ -116,7 +131,7 @@ static uint8_t device_descriptor[] = {
         1                                       // bNumConfigurations
 };
 
-static const uint8_t qualifier_descriptor[] = {	// 9.6.2 Device_Qualifier, page 264
+PROGMEM static const uint8_t qualifier_descriptor[] = {	// 9.6.2 Device_Qualifier, page 264
 	10,					// bLength
 	6,					// bDescriptorType
 	0x00, 0x02,				// bcdUSB
@@ -618,7 +633,15 @@ static uint8_t flightsim_report_desc[] = {
 #define MULTITOUCH_INTERFACE_DESC_SIZE	0
 #endif
 
-#define CONFIG_DESC_SIZE		MULTITOUCH_INTERFACE_DESC_POS+MULTITOUCH_INTERFACE_DESC_SIZE
+#define EXPERIMENTAL_INTERFACE_DESC_POS	MULTITOUCH_INTERFACE_DESC_POS+MULTITOUCH_INTERFACE_DESC_SIZE
+#ifdef  EXPERIMENTAL_INTERFACE
+#define EXPERIMENTAL_INTERFACE_DESC_SIZE 9+7+7
+#define EXPERIMENTAL_HID_DESC_OFFSET	MULTITOUCH_INTERFACE_DESC_POS+9
+#else
+#define EXPERIMENTAL_INTERFACE_DESC_SIZE 0
+#endif
+
+#define CONFIG_DESC_SIZE		EXPERIMENTAL_INTERFACE_DESC_POS+EXPERIMENTAL_INTERFACE_DESC_SIZE
 
 
 
@@ -627,9 +650,9 @@ static uint8_t flightsim_report_desc[] = {
 // **************************************************************
 
 // USB Configuration Descriptor.  This huge descriptor tells all
-// of the devices capbilities.
+// of the devices capabilities.
 
-const uint8_t usb_config_descriptor_480[CONFIG_DESC_SIZE] = {
+PROGMEM const uint8_t usb_config_descriptor_480[CONFIG_DESC_SIZE] = {
         // configuration descriptor, USB spec 9.6.3, page 264-266, Table 9-10
         9,                                      // bLength;
         2,                                      // bDescriptorType;
@@ -1611,11 +1634,39 @@ const uint8_t usb_config_descriptor_480[CONFIG_DESC_SIZE] = {
         0x03,                                   // bmAttributes (0x03=intr)
         MULTITOUCH_SIZE, 0,                     // wMaxPacketSize
         4,                                      // bInterval, 4 = 1ms
-#endif // KEYMEDIA_INTERFACE
+#endif // MULTITOUCH_INTERFACE
+
+#ifdef EXPERIMENTAL_INTERFACE
+	// configuration for 480 Mbit/sec speed
+        // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+        9,                                      // bLength
+        4,                                      // bDescriptorType
+        EXPERIMENTAL_INTERFACE,                 // bInterfaceNumber
+        0,                                      // bAlternateSetting
+        2,                                      // bNumEndpoints
+        0xFF,                                   // bInterfaceClass (0xFF = Vendor)
+        0x6A,                                   // bInterfaceSubClass
+        0xFF,                                   // bInterfaceProtocol
+        0,                                      // iInterface
+        // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+        7,                                      // bLength
+        5,                                      // bDescriptorType
+        1 | 0x80,                               // bEndpointAddress
+        0x02,                                   // bmAttributes (0x02=bulk)
+        LSB(512), MSB(512),                     // wMaxPacketSize
+        1,                                      // bInterval
+        // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+        7,                                      // bLength
+        5,                                      // bDescriptorType
+        1,                                      // bEndpointAddress
+        0x02,                                   // bmAttributes (0x02=bulk)
+        LSB(512), MSB(512),                     // wMaxPacketSize
+        1,                                      // bInterval
+#endif // EXPERIMENTAL_INTERFACE
 };
 
 
-const uint8_t usb_config_descriptor_12[CONFIG_DESC_SIZE] = {
+PROGMEM const uint8_t usb_config_descriptor_12[CONFIG_DESC_SIZE] = {
         // configuration descriptor, USB spec 9.6.3, page 264-266, Table 9-10
         9,                                      // bLength;
         2,                                      // bDescriptorType;
@@ -2597,7 +2648,35 @@ const uint8_t usb_config_descriptor_12[CONFIG_DESC_SIZE] = {
         0x03,                                   // bmAttributes (0x03=intr)
         MULTITOUCH_SIZE, 0,                     // wMaxPacketSize
         1,                                      // bInterval
-#endif // KEYMEDIA_INTERFACE
+#endif // MULTITOUCH_INTERFACE
+
+#ifdef EXPERIMENTAL_INTERFACE
+	// configuration for 12 Mbit/sec speed
+        // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+        9,                                      // bLength
+        4,                                      // bDescriptorType
+        EXPERIMENTAL_INTERFACE,                 // bInterfaceNumber
+        0,                                      // bAlternateSetting
+        2,                                      // bNumEndpoints
+        0xFF,                                   // bInterfaceClass (0xFF = Vendor)
+        0x6A,                                   // bInterfaceSubClass
+        0xFF,                                   // bInterfaceProtocol
+        0,                                      // iInterface
+        // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+        7,                                      // bLength
+        5,                                      // bDescriptorType
+        1 | 0x80,                               // bEndpointAddress
+        0x02,                                   // bmAttributes (0x02=bulk)
+        LSB(64), MSB(64),                       // wMaxPacketSize
+        1,                                      // bInterval
+        // endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+        7,                                      // bLength
+        5,                                      // bDescriptorType
+        1,                                      // bEndpointAddress
+        0x02,                                   // bmAttributes (0x02=bulk)
+        LSB(64), MSB(64),                       // wMaxPacketSize
+        1,                                      // bInterval
+#endif // EXPERIMENTAL_INTERFACE
 };
 
 
@@ -2631,18 +2710,18 @@ extern struct usb_string_descriptor_struct usb_string_product_name
 extern struct usb_string_descriptor_struct usb_string_serial_number
         __attribute__ ((weak, alias("usb_string_serial_number_default")));
 
-const struct usb_string_descriptor_struct string0 = {
+PROGMEM const struct usb_string_descriptor_struct string0 = {
         4,
         3,
         {0x0409}
 };
 
-const struct usb_string_descriptor_struct usb_string_manufacturer_name_default = {
+PROGMEM const struct usb_string_descriptor_struct usb_string_manufacturer_name_default = {
         2 + MANUFACTURER_NAME_LEN * 2,
         3,
         MANUFACTURER_NAME
 };
-const struct usb_string_descriptor_struct usb_string_product_name_default = {
+PROGMEM const struct usb_string_descriptor_struct usb_string_product_name_default = {
 	2 + PRODUCT_NAME_LEN * 2,
         3,
         PRODUCT_NAME
@@ -2653,7 +2732,7 @@ struct usb_string_descriptor_struct usb_string_serial_number_default = {
         {0,0,0,0,0,0,0,0,0,0}
 };
 #ifdef MTP_INTERFACE
-const struct usb_string_descriptor_struct usb_string_mtp = {
+PROGMEM const struct usb_string_descriptor_struct usb_string_mtp = {
 	2 + 3 * 2,
 	3,
 	{'M','T','P'}
