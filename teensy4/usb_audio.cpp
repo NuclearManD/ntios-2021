@@ -28,10 +28,8 @@
  * SOFTWARE.
  */
 
-#include <Arduino.h>
 #include "usb_dev.h"
 #include "usb_audio.h"
-#include "debug/printf.h"
 
 #ifdef AUDIO_INTERFACE
 

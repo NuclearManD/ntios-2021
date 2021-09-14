@@ -28,12 +28,14 @@
  * SOFTWARE.
  */
 
-#include <Arduino.h>
-
 // IntervalTimer based tone.  This allows tone() to share the timers with other
 // libraries, rather than permanently hogging one PIT timer even for projects
 // which never use tone().  Someday this single-tone implementation might be
 // changed to allow multiple simultaneous tones.
+
+#include <stdint.h>
+#include "IntervalTimer.h"
+#include "core_pins.h"
 
 static uint32_t tone_toggle_count;
 static volatile uint32_t *tone_reg;

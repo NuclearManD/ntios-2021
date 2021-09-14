@@ -32,8 +32,6 @@
 #include "usb_touch.h"
 #include "core_pins.h" // for millis()
 #include <string.h> // for memcpy()
-#include "avr/pgmspace.h" // for PROGMEM, DMAMEM, FASTRUN
-#include "debug/printf.h"
 #include "core_pins.h"
 
 

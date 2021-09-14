@@ -28,8 +28,8 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include "IntervalTimer.h"
-#include "debug/printf.h"
 
 static void pit_isr(void);
 

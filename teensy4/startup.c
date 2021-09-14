@@ -302,7 +302,7 @@ FLASHMEM static uint32_t flexspi2_psram_id(uint32_t addr)
 	return id & 0xFFFF;
 }
 
-FLASHMEM void configure_external_ram()
+void configure_external_ram()
 {
 	// initialize pins
 	IOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_22 = 0x1B0F9; // 100K pullup, strong drive, max speed, hyst

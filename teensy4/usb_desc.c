@@ -36,7 +36,7 @@
 #include "usb_names.h"
 #include "imxrt.h"
 #include "avr_functions.h"
-#include "avr/pgmspace.h"
+//#include "avr/pgmspace.h"
 
 // At very slow CPU speeds, the OCRAM just isn't fast enough for
 // USB to work reliably.  But the precious/limited DTCM is.  So
@@ -116,7 +116,7 @@ static uint8_t device_descriptor[] = {
         1                                       // bNumConfigurations
 };
 
-PROGMEM static const uint8_t qualifier_descriptor[] = {	// 9.6.2 Device_Qualifier, page 264
+static const uint8_t qualifier_descriptor[] = {	// 9.6.2 Device_Qualifier, page 264
 	10,					// bLength
 	6,					// bDescriptorType
 	0x00, 0x02,				// bcdUSB
@@ -629,7 +629,7 @@ static uint8_t flightsim_report_desc[] = {
 // USB Configuration Descriptor.  This huge descriptor tells all
 // of the devices capbilities.
 
-PROGMEM const uint8_t usb_config_descriptor_480[CONFIG_DESC_SIZE] = {
+const uint8_t usb_config_descriptor_480[CONFIG_DESC_SIZE] = {
         // configuration descriptor, USB spec 9.6.3, page 264-266, Table 9-10
         9,                                      // bLength;
         2,                                      // bDescriptorType;
@@ -1615,7 +1615,7 @@ PROGMEM const uint8_t usb_config_descriptor_480[CONFIG_DESC_SIZE] = {
 };
 
 
-PROGMEM const uint8_t usb_config_descriptor_12[CONFIG_DESC_SIZE] = {
+const uint8_t usb_config_descriptor_12[CONFIG_DESC_SIZE] = {
         // configuration descriptor, USB spec 9.6.3, page 264-266, Table 9-10
         9,                                      // bLength;
         2,                                      // bDescriptorType;
@@ -2631,18 +2631,18 @@ extern struct usb_string_descriptor_struct usb_string_product_name
 extern struct usb_string_descriptor_struct usb_string_serial_number
         __attribute__ ((weak, alias("usb_string_serial_number_default")));
 
-PROGMEM const struct usb_string_descriptor_struct string0 = {
+const struct usb_string_descriptor_struct string0 = {
         4,
         3,
         {0x0409}
 };
 
-PROGMEM const struct usb_string_descriptor_struct usb_string_manufacturer_name_default = {
+const struct usb_string_descriptor_struct usb_string_manufacturer_name_default = {
         2 + MANUFACTURER_NAME_LEN * 2,
         3,
         MANUFACTURER_NAME
 };
-PROGMEM const struct usb_string_descriptor_struct usb_string_product_name_default = {
+const struct usb_string_descriptor_struct usb_string_product_name_default = {
 	2 + PRODUCT_NAME_LEN * 2,
         3,
         PRODUCT_NAME
@@ -2653,7 +2653,7 @@ struct usb_string_descriptor_struct usb_string_serial_number_default = {
         {0,0,0,0,0,0,0,0,0,0}
 };
 #ifdef MTP_INTERFACE
-PROGMEM const struct usb_string_descriptor_struct usb_string_mtp = {
+const struct usb_string_descriptor_struct usb_string_mtp = {
 	2 + 3 * 2,
 	3,
 	{'M','T','P'}

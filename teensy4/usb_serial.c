@@ -33,10 +33,8 @@
 #include "core_pins.h"// for delay()
 //#include "HardwareSerial.h"
 #include <string.h> // for memcpy()
-#include "avr/pgmspace.h" // for PROGMEM, DMAMEM, FASTRUN
-
-#include "debug/printf.h"
 #include "core_pins.h"
+#include "includes/pgmspace.h"
 
 // defined by usb_dev.h -> usb_desc.h
 #if defined(CDC_STATUS_INTERFACE) && defined(CDC_DATA_INTERFACE)

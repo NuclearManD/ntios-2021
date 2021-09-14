@@ -32,8 +32,8 @@
 #include "usb_mouse.h"
 #include "core_pins.h" // for yield()
 #include <string.h> // for memcpy()
-#include "avr/pgmspace.h" // for PROGMEM, DMAMEM, FASTRUN
-#include "debug/printf.h"
+//#include "avr/pgmspace.h" // for PROGMEM, DMAMEM, FASTRUN
+//#include "debug/printf.h"
 #include "core_pins.h"
 
 #ifdef MOUSE_INTERFACE // defined by usb_dev.h -> usb_desc.h

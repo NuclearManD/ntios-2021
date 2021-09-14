@@ -1,8 +1,6 @@
-#include "debug/printf.h"
 
 #ifdef PRINT_DEBUG_STUFF
 
-#include "avr/pgmspace.h"
 #include <stdarg.h>
 #include "imxrt.h"
 
@@ -10,7 +8,7 @@ void putchar_debug(char c);
 static void puint_debug(unsigned int num);
 
 
-FLASHMEM void printf_debug(const char *format, ...)
+void printf_debug(const char *format, ...)
 {
 	va_list args;
 	unsigned int val;

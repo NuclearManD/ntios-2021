@@ -31,6 +31,7 @@
 #pragma once
 
 #include "usb_desc.h"
+#include "core_pins.h"
 #include <stdint.h>
 
 #if (defined(CDC_STATUS_INTERFACE) && defined(CDC_DATA_INTERFACE)) || defined(USB_DISABLED)

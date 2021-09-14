@@ -34,9 +34,13 @@
 // developed for Teensyduino have made their way back into
 // Arduino's code base.  :-)
 
-#include <Arduino.h>
 
-#include "debug/printf.h"
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <math.h>
+#include "Print.h"
+
 #undef printf
 
 size_t Print::write(const uint8_t *buffer, size_t size)

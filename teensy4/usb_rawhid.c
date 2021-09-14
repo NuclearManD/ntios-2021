@@ -30,12 +30,10 @@
 
 #include "usb_dev.h"
 #include "usb_rawhid.h"
-#include "avr/pgmspace.h" // for PROGMEM, DMAMEM, FASTRUN
 #include "core_pins.h" // for yield(), millis()
 #include <string.h>    // for memcpy()
 //#include "HardwareSerial.h"
 
-#include "debug/printf.h"
 
 #ifdef RAWHID_INTERFACE // defined by usb_dev.h -> usb_desc.h
 

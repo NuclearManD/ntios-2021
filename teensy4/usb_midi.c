@@ -32,8 +32,6 @@
 #include "usb_midi.h"
 #include "core_pins.h" // for yield()
 #include <string.h> // for memcpy()
-#include "avr/pgmspace.h" // for PROGMEM, DMAMEM, FASTRUN
-#include "debug/printf.h"
 #include "core_pins.h"
 
 #ifdef MIDI_INTERFACE // defined by usb_dev.h -> usb_desc.h

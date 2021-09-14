@@ -378,3 +378,7 @@ static inline uint8_t digitalReadFast(uint8_t pin)
 
 
 #endif
+
+#ifdef __cplusplus
+}
+#endif

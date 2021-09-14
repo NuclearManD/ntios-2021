@@ -28,7 +28,6 @@
  * SOFTWARE.
  */
 
-#include <Arduino.h>
 #include "HardwareSerial.h"
 #if defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41)
 

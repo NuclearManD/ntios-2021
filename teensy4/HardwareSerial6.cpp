@@ -28,7 +28,6 @@
  * SOFTWARE.
  */
 
-#include <Arduino.h>
 #include "HardwareSerial.h"
 
 #ifndef SERIAL6_TX_BUFFER_SIZE

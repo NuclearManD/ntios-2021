@@ -30,7 +30,6 @@
 
 #include "HardwareSerial.h"
 #include "core_pins.h"
-#include "Arduino.h"
 //#include "debug/printf.h"
 
 /*typedef struct {
