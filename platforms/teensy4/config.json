@@ -1,0 +1,18 @@
+{
+	"mcu": "IMXRT1062",
+	"mcu_ld": "imxrt1062_t41.ld",
+
+	"cc": "arm-none-eabi-gcc",
+	"ld": "arm-none-eabi-ld",
+	"cxx": "arm-none-eabi-g++",
+	"objcopy": "arm-none-eabi-objcopy",
+	"size": "arm-none-eabi-size",
+
+	"cpu_flags": "-mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -mthumb",
+	"cpp_flags": "-DUSB_SERIAL_HID -g -O3 -MMD -I. -ffunction-sections -fdata-sections -Iincludes",
+	"cxx_flags": "-fno-exceptions -Wno-error=narrowing",
+	"c_flags": "",
+	"ld_flags": "-lm -lstdc++ -Os -Wl,--gc-sections,--relax",
+
+	"executable_type": "ARM32_THUMB"
+}
