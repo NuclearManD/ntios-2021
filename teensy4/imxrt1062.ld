@@ -10,25 +10,32 @@ ENTRY(ImageVectorTable)
 
 SECTIONS
 {
-	.text.progmem : {
+	.text.headers : {
 		KEEP(*(.flashconfig))
 		FILL(0xFF)
 		. = ORIGIN(FLASH) + 0x1000;
 		KEEP(*(.ivt))
 		KEEP(*(.bootdata))
-		KEEP(*(.vectors))
+		. = ALIGN(1024);
+	} > FLASH
+
+	.text.code : {
 		KEEP(*(.startup))
 		*(.flashmem*)
+		. = ALIGN(4);
+		KEEP(*(.init))
+		__preinit_array_start = .;
+		KEEP (*(.preinit_array))
+		__preinit_array_end = .;
+		__init_array_start = .;
+		KEEP (*(.init_array))
+		__init_array_end = .;
+		. = ALIGN(4);
+	} > FLASH
+
+	.text.progmem : {
 		*(.progmem*)
-                . = ALIGN(4);
-                KEEP(*(.init))
-                __preinit_array_start = .;
-                KEEP (*(.preinit_array))
-                __preinit_array_end = .;
-                __init_array_start = .;
-                KEEP (*(.init_array))
-                __init_array_end = .;
-		. = ALIGN(16);
+		. = ALIGN(4);
 	} > FLASH
 
 	.text.itcm : {
@@ -38,14 +45,15 @@ SECTIONS
 		. = ALIGN(16);
 	} > ITCM  AT> FLASH
 
-	.text.itcm.padding (NOLOAD) : {
-		. = ALIGN(32768);
-	} > ITCM
+	.ARM.exidx : {
+		__exidx_start = .;
+		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
+		__exidx_end = .;
+	} > ITCM  AT> FLASH
 
 	.data : {
 		*(.rodata*)
 		*(.data*)
-		. = ALIGN(16);
 	} > DTCM  AT> FLASH
 
 	.bss ALIGN(4) : {
@@ -56,12 +64,19 @@ SECTIONS
 	} > DTCM
 
 	.bss.dma (NOLOAD) : {
+		*(.hab_log)
 		*(.dmabuffers)
 		. = ALIGN(32);
 	} > RAM
 
+	.text.csf : {
+		FILL(0xFF)
+		. = ALIGN(1024);
+		KEEP(*(.csf))
+	} > FLASH
+
 	_stext = ADDR(.text.itcm);
-	_etext = ADDR(.text.itcm) + SIZEOF(.text.itcm);
+	_etext = ADDR(.text.itcm) + SIZEOF(.text.itcm) + SIZEOF(.ARM.exidx);
 	_stextload = LOADADDR(.text.itcm);
 
 	_sdata = ADDR(.data);
@@ -74,11 +89,11 @@ SECTIONS
 	_heap_start = ADDR(.bss.dma) + SIZEOF(.bss.dma);
 	_heap_end = ORIGIN(RAM) + LENGTH(RAM);
 
-	_itcm_block_count = (SIZEOF(.text.itcm) + 0x7FFF) >> 15;
+	_itcm_block_count = (SIZEOF(.text.itcm) + SIZEOF(.ARM.exidx) + 0x7FFF) >> 15;
 	_flexram_bank_config = 0xAAAAAAAA | ((1 << (_itcm_block_count * 2)) - 1);
 	_estack = ORIGIN(DTCM) + ((16 - _itcm_block_count) << 15);
 
-	_flashimagelen = SIZEOF(.text.progmem) + SIZEOF(.text.itcm) + SIZEOF(.data);
+	_flashimagelen = SIZEOF(.text.headers) + SIZEOF(.text.code) + SIZEOF(.text.progmem) + SIZEOF(.text.itcm) + SIZEOF(.ARM.exidx) + SIZEOF(.data) + SIZEOF(.text.csf);
 	_teensy_model_identifier = 0x24;
 
 	.debug_info     0 : { *(.debug_info) }

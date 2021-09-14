@@ -27,14 +27,48 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# set your MCU type here, or make command line `make MCU=IMXRT1062`
-MCU=IMXRT1062
+# Use these lines for Teensy 4.0
+#MCU = IMXRT1062
+#MCU_LD = imxrt1062.ld
+#MCU_DEF = ARDUINO_TEENSY40
+
+# Use these lines for Teensy 4.1
+MCU = IMXRT1062
+MCU_LD = imxrt1062_t41.ld
+MCU_DEF = ARDUINO_TEENSY41
+COMPILERPATH=/home/nuclaer/gcc-arm-none-eabi-7-2017-q4-major/bin
 
 # The name of your project (used to name the compiled .hex file)
-TARGET = main
+TARGET = test
 
 # configurable options
-OPTIONS = -DF_CPU=600000000 -DUSB_SERIAL -DLAYOUT_US_ENGLISH -DUSING_MAKEFILE -DARDUINO_TEENSY41 -D__IMXRT1062__
+OPTIONS = -DF_CPU=600000000 -DUSB_SERIAL -DLAYOUT_US_ENGLISH -DUSING_MAKEFILE
+#
+# USB Type configuration:
+#   -DUSB_SERIAL
+#   -DUSB_DUAL_SERIAL
+#   -DUSB_TRIPLE_SERIAL
+#   -DUSB_KEYBOARDONLY
+#   -DUSB_TOUCHSCREEN
+#   -DUSB_HID_TOUCHSCREEN
+#   -DUSB_HID
+#   -DUSB_SERIAL_HID
+#   -DUSB_MIDI
+#   -DUSB_MIDI4
+#   -DUSB_MIDI16
+#   -DUSB_MIDI_SERIAL
+#   -DUSB_MIDI4_SERIAL
+#   -DUSB_MIDI16_SERIAL
+#   -DUSB_AUDIO
+#   -DUSB_MIDI_AUDIO_SERIAL
+#   -DUSB_MIDI16_AUDIO_SERIAL
+#   -DUSB_MTPDISK
+#   -DUSB_RAWHID
+#   -DUSB_FLIGHTSIM
+#   -DUSB_FLIGHTSIM_JOYSTICK
+
+# options needed by many Arduino libraries to configure for Teensy model
+OPTIONS += -D__$(MCU)__ -DARDUINO=10813 -DTEENSYDUINO=154 -D$(MCU_DEF)
 
 # for Cortex M7 with single & double precision FPU
 CPUOPTIONS = -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -mthumb
@@ -56,16 +90,39 @@ CPUOPTIONS = -mcpu=cortex-m7 -mfloat-abi=hard -mfpu=fpv5-d16 -mthumb
 # locations and edit the pathnames.  The rest of Arduino is not needed.
 #************************************************************************
 
+# Those that specify a NO_ARDUINO environment variable will
+# be able to use this Makefile with no Arduino dependency.
+# Please note that if ARDUINOPATH was set, it will override
+# the NO_ARDUINO behaviour.
+#ifndef NO_ARDUINO
+# Path to your arduino installation
+#ARDUINOPATH ?= ../../../../..
+#endif
+
+#ifdef ARDUINOPATH
+
+# path location for Teensy Loader, teensy_post_compile and teensy_reboot (on Linux)
+#TOOLSPATH = $(abspath $(ARDUINOPATH)/hardware/tools)
+
+# path location for Arduino libraries (currently not used)
+#LIBRARYPATH = $(abspath $(ARDUINOPATH)/libraries)
+
+# path location for the arm-none-eabi compiler
+#COMPILERPATH = $(abspath $(ARDUINOPATH)/hardware/tools/arm/bin)
+
+#else
 # Default to the normal GNU/Linux compiler path if NO_ARDUINO
 # and ARDUINOPATH was not set.
-COMPILERPATH ?= /usr/bin
+#COMPILERPATH ?= /usr/bin
+
+#endif
 
 #************************************************************************
 # Settings below this point usually do not need to be edited
 #************************************************************************
 
 # CPPFLAGS = compiler options for C and C++
-CPPFLAGS = -Wall -g -O2 $(CPUOPTIONS) -MMD $(OPTIONS) -I. -Iincludes -ffunction-sections -fdata-sections
+CPPFLAGS = -Wall -g -O2 $(CPUOPTIONS) -MMD $(OPTIONS) -I. -ffunction-sections -fdata-sections -Iincludes
 
 # compiler options for C++ only
 CXXFLAGS = -std=gnu++14 -felide-constructors -fno-exceptions -fpermissive -fno-rtti -Wno-error=narrowing
@@ -74,10 +131,10 @@ CXXFLAGS = -std=gnu++14 -felide-constructors -fno-exceptions -fpermissive -fno-r
 CFLAGS =
 
 # linker options
-LDFLAGS = -Os -Wl,--gc-sections,--relax $(SPECS) $(CPUOPTIONS) -T$(MCU_LD) -L../libs
+LDFLAGS = -Os -Wl,--gc-sections,--relax $(SPECS) $(CPUOPTIONS) -T$(MCU_LD)
 
 # additional libraries to link
-LIBS = -larm_cortexM7lfsp_math -lm -lstdc++
+LIBS = -lm -lstdc++
 
 
 # names for the compiler programs
@@ -110,10 +167,6 @@ endif
 
 # compiler generated dependency info
 -include $(OBJS:.o=.d)
-
-# make "MCU" lower case
-LOWER_MCU := $(subst A,a,$(subst B,b,$(subst C,c,$(subst D,d,$(subst E,e,$(subst F,f,$(subst G,g,$(subst H,h,$(subst I,i,$(subst J,j,$(subst K,k,$(subst L,l,$(subst M,m,$(subst N,n,$(subst O,o,$(subst P,p,$(subst Q,q,$(subst R,r,$(subst S,s,$(subst T,t,$(subst U,u,$(subst V,v,$(subst W,w,$(subst X,x,$(subst Y,y,$(subst Z,z,$(MCU)))))))))))))))))))))))))))
-MCU_LD = $(LOWER_MCU)_t41.ld
 
 clean:
 	rm -f *.o *.d $(TARGET).elf $(TARGET).hex
