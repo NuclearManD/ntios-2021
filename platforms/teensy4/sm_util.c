@@ -40,6 +40,9 @@ static int smalloc_valid_tag(struct smalloc_hdr *shdr)
 
 static void smalloc_do_crash(struct smalloc_pool *spool, const void *p)
 {
+	(void)spool;
+	(void)p;
+
 	char *c = NULL;
 	*c = 'X';
 }

@@ -62,7 +62,7 @@ static const uint8_t A10 = PIN_A10;
 static const uint8_t A11 = PIN_A11;
 static const uint8_t A12 = PIN_A12;
 static const uint8_t A13 = PIN_A13;
-#ifdef ARDUINO_TEENSY41
+#ifdef TEENSY41
 #define PIN_A14 (38)
 #define PIN_A15 (39)
 #define PIN_A16 (40)
@@ -96,7 +96,7 @@ static const uint8_t SCL = 19;
 #if defined(ARDUINO_TEENSY40)
   #define NUM_DIGITAL_PINS  40
   #define NUM_ANALOG_INPUTS 14
-#elif defined(ARDUINO_TEENSY41)
+#elif defined(TEENSY41)
   #define NUM_DIGITAL_PINS  55
   #define NUM_ANALOG_INPUTS 18
 #elif defined(ARDUINO_TEENSY_MICROMOD)
@@ -110,7 +110,7 @@ static const uint8_t SCL = 19;
 #if defined(__IMXRT1062__) && defined(ARDUINO_TEENSY40)
   #define analogInputToDigitalPin(p) (((p) <= 9) ? (p) + 14 : (( ((p) >= 14 && (p) <= 27)) ? (p) : -1))
   #define digitalPinHasPWM(p) ((p) <= 15 || (p) == 18 || (p) == 19 || ((p) >= 22 && (p) <= 25) || ((p) >= 28 && (p) <= 31) || (p) == 33)
-#elif defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41)
+#elif defined(__IMXRT1062__) && defined(TEENSY41)
   #define analogInputToDigitalPin(p) (((p) <= 9) ? (p) + 14 : (( ((p) >= 14 && (p) <= 27)) || ((p) >= 38 && (p) <= 41) ? (p) : -1))
   #define digitalPinHasPWM(p) ((p) <= 15 || (p) == 18 || (p) == 19 || ((p) >= 22 && (p) <= 25) || ((p) >= 28 && (p) <= 31) || (p) == 33)
 
@@ -154,6 +154,7 @@ extern const struct digital_pin_bitband_and_config_table_struct digital_pin_to_i
 static inline uint8_t digitalPinToTimer(uint8_t) __attribute__((always_inline, unused));
 static inline uint8_t digitalPinToTimer(uint8_t pin)
 {
+	(void)pin;
 	// TODO: does anything meaningful use this?
 	return NOT_ON_TIMER;
 }

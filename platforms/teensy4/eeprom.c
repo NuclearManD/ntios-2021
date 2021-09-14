@@ -38,13 +38,13 @@
 #include <string.h>
 #include "debug/printf.h"
 
-#if defined(ARDUINO_TEENSY40)
+#if defined(TEENSY40)
 #define FLASH_BASEADDR 0x601F0000
 #define FLASH_SECTORS  15
-#elif defined(ARDUINO_TEENSY41)
+#elif defined(TEENSY41)
 #define FLASH_BASEADDR 0x607C0000
 #define FLASH_SECTORS  63
-#elif defined(ARDUINO_TEENSY_MICROMOD)
+#elif defined(TEENSY_MICROMOD)
 #define FLASH_BASEADDR 0x60FC0000
 #define FLASH_SECTORS  63
 #endif

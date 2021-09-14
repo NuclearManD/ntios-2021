@@ -647,12 +647,16 @@ void * _sbrk(int incr)
 __attribute__((weak))
 int _read(int file, char *ptr, int len)
 {
+	(void)file;
+	(void)ptr;
+	(void)len;
 	return 0;
 }
 
 __attribute__((weak))
 int _close(int fd)
 {
+	(void)fd;
 	return -1;
 }
 
@@ -661,6 +665,7 @@ int _close(int fd)
 __attribute__((weak))
 int _fstat(int fd, struct stat *st)
 {
+	(void)fd;
 	st->st_mode = S_IFCHR;
 	return 0;
 }
@@ -668,18 +673,23 @@ int _fstat(int fd, struct stat *st)
 __attribute__((weak))
 int _isatty(int fd)
 {
+	(void)fd;
 	return 1;
 }
 
 __attribute__((weak))
 int _lseek(int fd, long long offset, int whence)
 {
+	(void)fd;
+	(void)offset;
+	(void)whence;
 	return -1;
 }
 
 __attribute__((weak))
 void _exit(int status)
 {
+	(void)status;
 	while (1) asm ("WFI");
 }
 

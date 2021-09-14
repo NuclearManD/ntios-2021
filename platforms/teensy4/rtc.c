@@ -67,5 +67,6 @@ void rtc_set(unsigned long t)
 
 void rtc_compensate(int adjust)
 {
+	(void)adjust;
 }
 

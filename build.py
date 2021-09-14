@@ -10,66 +10,137 @@ Ah yes, the project is run by someone from 42SV :)
 No I'm not going to remove it.  I've added -fpermissive too (that one I PARTICULARLY hate)
 '''
 
-BASE_CPP_FLAGS = "-Wall -Wextra -Werror -fmax-errors=5"
+BASE_CPP_FLAGS = "-Wall -Wextra -Werror -Wno-implicit-fallthrough -fmax-errors=5"
 BASE_CXX_FLAGS = "-std=gnu++14 -felide-constructors -fpermissive -fno-rtti"
 BASE_C_FLAGS = ""  # None for now
 
-def build_platform(name):
-	path = os.path.join('platforms', name)
-	if not os.path.isdir(path):
-		raise FileNotFoundError(f'No platform found matching {name}')
+def compile_current_directory(build_dst: str, conf: dict) -> (int, list):
+    os.makedirs(build_dst, exist_ok=True)
 
-	with open(os.path.join(path, 'config.json')) as f:
-		conf = json.load(f)
+    mcu = conf['mcu']
+    executable_type = conf['executable_type']
 
-	mcu = conf['mcu']
-	executable_type = conf['executable_type']
+    defines = f'-D__{mcu}__ -DNTIOS_{mcu} -DEXEC_TYPE={executable_type} -DNATIVE_NTIOS=0x20210000'
 
-	defines = f'-D__{mcu}__ -DNTIOS_{mcu} -DEXEC_TYPE={executable_type} -DNATIVE_NTIOS=0x20210000'
+    cpu_flags = conf['cpu_flags']
+    cpp_flags = BASE_CPP_FLAGS + ' ' + conf['cpp_flags'] + ' ' + cpu_flags + ' ' + defines
+    cxx_flags = BASE_CXX_FLAGS + ' ' + conf['cxx_flags'] + ' ' + cpp_flags
+    c_flags   = BASE_C_FLAGS + ' ' + conf['c_flags']   + ' ' + cpp_flags
 
-	cpu_flags = conf['cpu_flags']
-	cpp_flags = BASE_CPP_FLAGS + ' ' + conf['cpp_flags'] + ' ' + cpu_flags + ' ' + defines
-	cxx_flags = BASE_CXX_FLAGS + ' ' + conf['cxx_flags'] + ' ' + cpp_flags
-	c_flags   = BASE_C_FLAGS + ' ' + conf['c_flags']   + ' ' + cpp_flags
-	ld_flags  = f'{conf["ld_flags"]} {cpu_flags} -T{conf["mcu_ld"]}'
+    cc = conf['cc']
+    cxx = conf['cxx']
 
-	cc = conf['cc']
-	ld = conf['ld']
-	cxx = conf['cxx']
-	objcopy = conf['objcopy']
-	size = conf['size']
+    c_files = []
+    cpp_files = []
+    o_files = []
+    for filename in os.listdir('.'):
+        if filename.endswith('.c'):
+            c_files.append(filename)
+        if filename.endswith('.cpp'):
+            cpp_files.append(filename)
 
-	target = f'ntios_{name}'
+    errors = 0
+    for i in c_files:
+        o_file = build_dst + '/' + i[:-2] + '.o'
+        o_files.append(o_file)
 
-	os.chdir(path)
-	os.makedirs('build', exist_ok=True)
+        # Skip O files that have already been generated
+        if os.path.isfile(o_file):
+            last_compiled_time = os.path.getmtime(o_file)
+            if last_compiled_time > os.path.getmtime(i):
+                continue
 
-	c_files = []
-	cpp_files = []
-	o_files = []
-	for filename in os.listdir('.'):
-		if filename.endswith('.c'):
-			c_files.append(filename)
-		if filename.endswith('.cpp'):
-			cpp_files.append(filename)
+        cmd = f'{cc} {i} -c -o {o_file} {c_flags}'
+        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc.wait()
+        if proc.returncode != 0:
+            print('\n' + cmd)
+            print(proc.stdout.read().decode() + '\n')
+            sys.stderr.write(proc.stderr.read().decode() + '\n')
+            errors += 1
+        else:
+            print(i)
 
-	did_error = False
-	for i in c_files:
-		o_file = 'build/' + i[:-2] + '.o'
-		cmd = f'{cc} {i} -o {o_file} {c_flags}'
-		print(cmd)
-		proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		proc.wait()
-		print(proc.stdout.read().decode() + '\n')
-		sys.stderr.write(proc.stderr.read().decode() + '\n')
-		if proc.returncode != 0:
-			did_error = True
+        if errors >= 5:
+            break
 
-	if did_error:
-		print("Failure.  Fix errors.")
-		return
+    if errors > 0:
+        return errors, o_files
 
-	os.chdir('../..')
+    errors = 0
+    for i in cpp_files:
+        o_file = build_dst + '/' + i[:-4] + '.o'
+        o_files.append(o_file)
+
+        # Skip O files that have already been generated
+        if os.path.isfile(o_file):
+            last_compiled_time = os.path.getmtime(o_file)
+            if last_compiled_time > os.path.getmtime(i):
+                continue
+
+        cmd = f'{cxx} {i} -c -o {o_file} {c_flags}'
+        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc.wait()
+        if proc.returncode != 0:
+            print('\n' + cmd)
+            print(proc.stdout.read().decode() + '\n')
+            sys.stderr.write(proc.stderr.read().decode() + '\n')
+            errors += 1
+        else:
+            print(i)
+
+        if errors >= 5:
+            break
+
+    return errors, o_files
+
+def build_platform(name: str):
+    path = os.path.join('platforms', name)
+    if not os.path.isdir(path):
+        raise FileNotFoundError(f'No platform found matching {name}')
+
+    with open(os.path.join(path, 'config.json')) as f:
+        conf = json.load(f)
+
+    cpu_flags = conf['cpu_flags']
+    ld_flags  = f'{conf["ld_flags"]} {cpu_flags} -T{conf["mcu_ld"]}'
+
+    ld = conf['ld']
+    objcopy = conf['objcopy']
+    size = conf['size']
+
+    target = f'ntios_{name}'
+
+    errors = 0
+    o_files = []
+
+    platform_build_dir = os.path.abspath(f'build/{name}')
+    ntios_build_dir = os.path.abspath(f'build/ntios')
+
+    print(f"\nCompiling platform {name}\n")
+
+    os.chdir(path)
+    new_errors, new_o_files = compile_current_directory(platform_build_dir, conf)
+    errors += new_errors
+    o_files += new_o_files
+
+    if errors > 0:
+        print("Failure.  Fix errors.")
+        return -1
+
+    print("Compiling NTIOS")
+
+    os.chdir('../../ntios')
+
+    new_errors, new_o_files = compile_current_directory(ntios_build_dir, conf)
+    errors += new_errors
+    o_files += new_o_files
+
+    if errors > 0:
+        print("Failure.  Fix errors.")
+        return -1
+
+    os.chdir('../../ntios')
 '''
 # automatically create lists of the sources and objects
 # TODO: this does not handle Arduino libraries yet...
@@ -83,20 +154,20 @@ OBJS := $(C_FILES:.c=.o) $(CPP_FILES:.cpp=.o)
 all: $(TARGET).hex
 
 $(TARGET).elf: $(OBJS) $(MCU_LD)
-	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+    $(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 %.hex: %.elf
-	$(SIZE) $<
-	$(OBJCOPY) -O ihex -R .eeprom $< $@
+    $(SIZE) $<
+    $(OBJCOPY) -O ihex -R .eeprom $< $@
 ifneq (,$(wildcard $(TOOLSPATH)))
-	$(TOOLSPATH)/teensy_post_compile -file=$(basename $@) -path=$(shell pwd) -tools=$(TOOLSPATH)
-	-$(TOOLSPATH)/teensy_reboot
+    $(TOOLSPATH)/teensy_post_compile -file=$(basename $@) -path=$(shell pwd) -tools=$(TOOLSPATH)
+    -$(TOOLSPATH)/teensy_reboot
 endif
 
 # compiler generated dependency info
 -include $(OBJS:.o=.d)
 
 clean:
-	rm -f *.o *.d $(TARGET).elf $(TARGET).hex
+    rm -f *.o *.d $(TARGET).elf $(TARGET).hex
 '''
 build_platform('teensy4')

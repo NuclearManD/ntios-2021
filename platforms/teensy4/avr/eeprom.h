@@ -31,11 +31,11 @@
 
 #include "avr_functions.h"
 
-#if defined(ARDUINO_TEENSY40)
+#if defined(TEENSY40)
 #define E2END 0x437
-#elif defined(ARDUINO_TEENSY41)
+#elif defined(TEENSY41)
 #define E2END 0x10BB
-#elif defined(ARDUINO_TEENSY_MICROMOD)
+#elif defined(TEENSY_MICROMOD)
 #define E2END 0x10BB
 #endif
 

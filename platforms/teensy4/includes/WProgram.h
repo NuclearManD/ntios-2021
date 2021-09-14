@@ -47,7 +47,6 @@
 
 #ifdef __cplusplus
 
-#include "avr_emulation.h"
 #include "usb_serial.h"
 #include "usb_seremu.h"
 #include "usb_keyboard.h"

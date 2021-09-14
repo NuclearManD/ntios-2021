@@ -84,6 +84,7 @@ public:
 	// default way to use EventResponder.  Calls from yield() allow use
 	// of Arduino libraries, String, Serial, etc.
 	void attach(EventResponderFunction function, uint8_t priority=128) {
+		(void)priority;
 		bool irq = disableInterrupts();
 		detachNoInterrupts();
 		_function = function;
@@ -109,6 +110,7 @@ public:
 	// interrupts, this allow fast interrupt-based response, but with less
 	// disruption to other libraries requiring their own interrupts.
 	void attachInterrupt(EventResponderFunction function, uint8_t priority=128) {
+		(void)priority;
 		bool irq = disableInterrupts();
 		detachNoInterrupts();
 		_function = function;
@@ -122,6 +124,7 @@ public:
 	// Attach a function to be called as its own thread.  Boards not running
 	// a RTOS or pre-emptive scheduler shall implement this as attach().
 	void attachThread(EventResponderFunction function, void *param=nullptr) {
+		(void)param;
 		attach(function); // for non-RTOS usage, compile as default attach
 	}
 

@@ -61,14 +61,14 @@ uint32_t FlexSPI_NOR_Config[128] = {
 	0,			// reserved
 	0,			// reserved
 
-#if defined(ARDUINO_TEENSY40)
+#if defined(TEENSY40)
 	0x00200000,		// sflashA1Size			0x50
-#elif defined(ARDUINO_TEENSY41)
+#elif defined(TEENSY41)
 	0x00800000,		// sflashA1Size			0x50
-#elif defined(ARDUINO_TEENSY_MICROMOD)
+#elif defined(TEENSY_MICROMOD)
 	0x01000000,		// sflashA1Size			0x50
 #else
-#error "Unknow flash chip size";
+#error "Unknown flash chip size";
 #endif
 	0,			// sflashA2Size
 	0,			// sflashB1Size
