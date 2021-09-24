@@ -104,9 +104,18 @@ void ResetHandler(void)
 	IOMUXC_GPR_GPR28 = 0xFFFFFFFF;
 	IOMUXC_GPR_GPR29 = 0xFFFFFFFF;
 #endif
+	
+	/*
+	 * This is from printf_debug_init().  For some reason, if we don't do this, the processor will crash :(
+	 * For this reason I moved it here.
+	 */
+	CCM_CCGR0 |= CCM_CCGR0_LPUART3(CCM_CCGR_ON); // turn on Serial4
+	IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_06 = 2; // Arduino pin 17
+	LPUART3_BAUD = LPUART_BAUD_OSR(25) | LPUART_BAUD_SBR(8); // ~115200 baud
+	LPUART3_CTRL = LPUART_CTRL_TE;
 
 	// must enable PRINT_DEBUG_STUFF in debug/print.h
-	printf_debug_init();
+	//printf_debug_init();
 	printf("\n***********IMXRT Startup**********\n");
 	printf("test %d %d %d\n", 1, -1234567, 3);
 

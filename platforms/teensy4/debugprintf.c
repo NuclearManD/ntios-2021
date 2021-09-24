@@ -1,11 +1,11 @@
 #include "debug/printf.h"
 
-#ifdef PRINT_DEBUG_STUFF
-
 #include "avr/pgmspace.h"
 #include <stdarg.h>
 #include "imxrt.h"
  #include "usb_desc.h"
+
+#ifdef PRINT_DEBUG_STUFF
 
 void putchar_debug(char c);
 static void puint_debug(unsigned int num);
@@ -78,9 +78,7 @@ static void puint_debug(unsigned int num)
 FLASHMEM void putchar_debug(char c)
 {
 	usb_serial_putchar(c);
-}	
-
-FLASHMEM void printf_debug_init(void) {}
+}
 
 #elif defined(PRINT_DEBUG_USING_USB) && defined(SEREMU_INTERFACE) && !defined(CDC_STATUS_INTERFACE) && !defined(CDC_DATA_INTERFACE)
 #include "usb_dev.h"
@@ -88,9 +86,7 @@ FLASHMEM void printf_debug_init(void) {}
 FLASHMEM void putchar_debug(char c)
 {
 	usb_seremu_putchar(c);
-}	
-
-FLASHMEM void printf_debug_init(void) {}
+}
 
 #else
 FLASHMEM void putchar_debug(char c)
@@ -99,13 +95,6 @@ FLASHMEM void putchar_debug(char c)
 	LPUART3_DATA = c;
 }
 
-FLASHMEM void printf_debug_init(void)
-{
-        CCM_CCGR0 |= CCM_CCGR0_LPUART3(CCM_CCGR_ON); // turn on Serial4
-        IOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_06 = 2; // Arduino pin 17
-        LPUART3_BAUD = LPUART_BAUD_OSR(25) | LPUART_BAUD_SBR(8); // ~115200 baud
-        LPUART3_CTRL = LPUART_CTRL_TE;
-}
 #endif
 
 

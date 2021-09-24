@@ -1,6 +1,6 @@
 // uncommenting the line below will enable the debug printf statements in cores\teensy4
 // by default it will print to the Serial4 TX pin at baud rate of 115200
-#define PRINT_DEBUG_STUFF
+//#define PRINT_DEBUG_STUFF
 
 // uncommenting the line below will switch to doing outputs to USB Serial or SEREMU instead of Serial4
 // However some of the earlier print statements that happen before USB is initialized will be lost
@@ -13,7 +13,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void printf_debug_init(void);
 void printf_debug(const char *format, ...);
 #ifdef __cplusplus
 }
@@ -22,6 +21,6 @@ void printf_debug(const char *format, ...);
 #else
 #define printf_init()
 #define printf(...)
-#define printf_debug_init()
+//#define printf_debug_init()
 
 #endif
