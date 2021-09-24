@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
-#include "unistd.h"
+#include "printf/ft_printf.h"
+#include <unistd.h>
 #include <stdarg.h>
 
 static unsigned	handle_flags_set_1(const char **fmtp)

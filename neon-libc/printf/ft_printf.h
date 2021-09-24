@@ -32,6 +32,10 @@
 
 # define UNSIGNED_FLAG_MASK 7
 
+# ifdef __cplusplus
+extern "C" {
+# endif
+
 typedef struct	s_fmt_d {
 	unsigned int	flags;
 	char			type;
@@ -56,5 +60,9 @@ int				printf_handle_string(int fd, va_list args, t_fmt_d *data);
 int				printf_fill(int fd, int dlen, t_fmt_d *f);
 int				printf_put_many(int fd, int sz, char c);
 int				printf_num_fill(int *ln, t_fmt_d *f, intmax_t n, int b);
+
+# ifdef __cplusplus
+}
+# endif
 
 #endif

@@ -29,7 +29,7 @@ t_mtx			*mtx_new(int x, int y)
 		free(mtx);
 		return (NULL);
 	}
-	ft_bzero(mtx->mem, x * y * sizeof(double));
+	bzero(mtx->mem, x * y * sizeof(double));
 	return (mtx);
 }
 
@@ -75,6 +75,6 @@ t_mtx			*mtx_dup(t_mtx *src)
 		free(mtx);
 		return (NULL);
 	}
-	ft_memcpy(mtx->mem, src->mem, sizeof(double) * src->x_size * src->y_size);
+	memcpy(mtx->mem, src->mem, sizeof(double) * src->x_size * src->y_size);
 	return (mtx);
 }

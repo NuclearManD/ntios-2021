@@ -28,7 +28,7 @@ void			*memccpy(void *dest, const void *src, int c, size_t n)
 	{
 		d[i] = *(s++);
 		if (d[i] == (char)c)
-			return (&(dest[i + 1]));
+			return (&(d[i + 1]));
 	}
 	return (NULL);
 }

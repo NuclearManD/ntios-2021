@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strrchr.c                                       :+:      :+:    :+:   */
+/*   logtool.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dbrophy <dbrophy@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/18 23:25:16 by dbrophy           #+#    #+#             */
-/*   Updated: 2020/02/18 23:25:16 by dbrophy          ###   ########.fr       */
+/*   Created: 2020/03/03 16:40:54 by dbrophy           #+#    #+#             */
+/*   Updated: 2020/03/03 16:40:54 by dbrophy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "stdlib.h"
-#include "libneon.h"
+#include <stdint.h>
+#include "printf/ft_printf.h"
 
-char			*strrchr(const char *s, int c)
+int				nchar_abs(intmax_t val, int base, t_fmt_d *data)
 {
-	int i;
+	uintmax_t	log;
+	int			len;
 
-	i = strlen(s);
-	while (1)
+	len = 0;
+	if (val == 0 && data->precision != 0)
+		len++;
+	log = (uintmax_t)val;
+	if (val < 0 && data->cnvrt != 'u' && base == 10)
+		log = (UINTMAX_MAX - log) + 1;
+	while (log != 0)
 	{
-		if (s[i] == (char)c)
-			return (char*)(&(s[i]));
-		if (i-- <= 0)
-			return (NULL);
+		log = log / base;
+		len++;
 	}
+	return (len);
 }

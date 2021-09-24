@@ -22,7 +22,7 @@ int				mtxcmp(t_mtx *a, t_mtx *b)
 	if (a->x_size != b->x_size || a->y_size != b->y_size)
 		return (-1);
 	size = sizeof(double) * a->x_size * a->y_size;
-	return (ft_memcmp(a->mem, b->mem, size) == 0);
+	return (memcmp(a->mem, b->mem, size) == 0);
 }
 
 int				veccmp(t_vector *a, t_vector *b)
@@ -31,5 +31,5 @@ int				veccmp(t_vector *a, t_vector *b)
 		return (a == b);
 	if (a->size != b->size)
 		return (-1);
-	return (ft_memcmp(a->vals, b->vals, sizeof(double) * a->size) == 0);
+	return (memcmp(a->vals, b->vals, sizeof(double) * a->size) == 0);
 }

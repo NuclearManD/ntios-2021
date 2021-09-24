@@ -12,7 +12,7 @@
 
 #include <stdarg.h>
 #include <unistd.h>
-#include "ft_printf.h"
+#include "printf/ft_printf.h"
 
 int				printf(const char *fmt, ...)
 {

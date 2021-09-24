@@ -21,7 +21,7 @@ double			vec3_mag(t_vec3 *vec)
 	x = vec->x;
 	y = vec->y;
 	z = vec->z;
-	return (ft_sqrt(x * x + y * y + z * z));
+	return (sqrt(x * x + y * y + z * z));
 }
 
 void			vec3_norm(t_vec3 *vec)
@@ -34,7 +34,7 @@ void			vec3_norm(t_vec3 *vec)
 	x = vec->x;
 	y = vec->y;
 	z = vec->z;
-	mag = ft_sqrt(x * x + y * y + z * z);
+	mag = sqrt(x * x + y * y + z * z);
 	vec->x = x / mag;
 	vec->y = y / mag;
 	vec->z = z / mag;

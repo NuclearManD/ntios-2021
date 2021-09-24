@@ -12,7 +12,7 @@
 
 #include "libneon.h"
 
-int				wordcount(char *s)
+int				wordcount(const char *s)
 {
 	int cnt;
 

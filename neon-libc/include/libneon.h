@@ -46,7 +46,7 @@ int				isprint(int c);
 int				isspace(int c);
 char			*ft_itoa(int n);
 int				logi(int base, int val);
-void			lstadd(t_list **alst, t_list *new);
+void			lstadd(t_list **alst, t_list *_new);
 void			lstdel(t_list **alst, void (*del)(void *, size_t));
 void			lstdelone(t_list **alst, void (*del)(void *, size_t));
 void			lstiter(t_list *lst, void (*f)(t_list *elem));
@@ -111,7 +111,7 @@ char			*strupcase(char *str);
 int				tolower(int c);
 int				toupper(int c);
 int				wordsplit(char **arr, char *s, int maxcount);
-int				wordcount(char *s);
+int				wordcount(const char *s);
 
 # ifdef __cplusplus
 }
