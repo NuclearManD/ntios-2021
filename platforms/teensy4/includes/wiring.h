@@ -35,7 +35,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "binary.h"
-#include "core_id.h"
 #include "core_pins.h"
 
 // type_traits interferes with min() and other defines
@@ -215,14 +214,6 @@ void *extmem_realloc(void *ptr, size_t size);
 
 #ifdef __cplusplus
 } // extern "C"
-#endif
-
-// fix C++ boolean issue
-// https://github.com/arduino/Arduino/pull/2151
-#ifdef __cplusplus
-typedef bool boolean;
-#else
-typedef uint8_t boolean;
 #endif
 
 #endif

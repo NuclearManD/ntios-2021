@@ -2353,8 +2353,8 @@ extern volatile uint32_t F_BUS_ACTUAL;
 extern volatile uint32_t scale_cpu_cycles_to_microseconds;
 extern volatile uint32_t systick_millis_count;
 
-static inline uint32_t millis(void) __attribute__((always_inline, unused));
-static inline uint32_t millis(void)
+
+inline uint32_t millis(void)
 {
 	return systick_millis_count;
 }

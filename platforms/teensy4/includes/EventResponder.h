@@ -34,6 +34,7 @@
 #if !defined(EventResponder_h) && defined(__cplusplus)
 #define EventResponder_h
 
+#include "includes/core_pins.h"
 #include <Arduino.h>
 
 /* EventResponder lets you control how your program responds to an event.

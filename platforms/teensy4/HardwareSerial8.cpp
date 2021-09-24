@@ -29,6 +29,7 @@
  */
 
 #include <Arduino.h>
+#include "avr/pgmspace.h"
 #include "HardwareSerial.h"
 #if defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41)
 

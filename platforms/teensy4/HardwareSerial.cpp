@@ -29,6 +29,7 @@
  */
 
 #include "HardwareSerial.h"
+#include "avr/pgmspace.h"
 #include "core_pins.h"
 #include "Arduino.h"
 //#include "debug/printf.h"

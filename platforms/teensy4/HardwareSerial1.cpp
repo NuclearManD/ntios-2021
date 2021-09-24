@@ -30,6 +30,7 @@
  */
 
 #include <Arduino.h>
+#include "avr/pgmspace.h"
 #include "HardwareSerial.h"
 
 #ifndef SERIAL1_TX_BUFFER_SIZE

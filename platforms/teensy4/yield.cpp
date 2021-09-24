@@ -29,6 +29,9 @@
  */
 
 #include <Arduino.h>
+#include "includes/usb_serial.h"
+#include "includes/core_pins.h"
+#include "HardwareSerial.h"
 #include "EventResponder.h"
 
 #ifdef USB_TRIPLE_SERIAL

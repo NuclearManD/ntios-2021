@@ -3,7 +3,7 @@
 	"mcu_ld": "imxrt1062_t41.ld",
 
 	"cc": "arm-none-eabi-gcc",
-	"ld": "arm-none-eabi-ld",
+	"ld": "arm-none-eabi-g++",
 	"cxx": "arm-none-eabi-g++",
 	"objcopy": "arm-none-eabi-objcopy",
 	"size": "arm-none-eabi-size",

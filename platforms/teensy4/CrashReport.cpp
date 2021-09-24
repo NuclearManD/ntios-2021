@@ -1,4 +1,8 @@
 #include <Arduino.h>
+#include "Print.h"
+#include "imxrt.h"
+#include "avr/pgmspace.h"
+#include "ntios.h"
 #include <CrashReport.h>
 
 /* Crash report info stored in the top 128 bytes of OCRAM (at 0x2027FF80)
@@ -132,9 +136,8 @@ size_t CrashReportClass::printTo(Print& p) const
     p.print(info->temp);
     p.print(" °C\n");
 
-    // TODO: fault handler should read the CCM & PLL registers to log actual speed at crash
     p.print("  Startup CPU clock speed is ");
-    p.print( F_CPU_ACTUAL/1000000);
+    p.print( get_cpu_hz()/1000000);
     p.print( "MHz\n");
 
 

@@ -30,6 +30,7 @@
 
 #include <Arduino.h>
 #include "usb_desc.h"
+#include "usb_serial.h"
 
 #if F_CPU >= 20000000
 

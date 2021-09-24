@@ -9621,9 +9621,16 @@ These register are used by the ROM code and should not be used by application so
 #define NVIC_SET_PRIORITY(irqnum, priority)  (*((volatile uint8_t *)0xE000E400 + (irqnum)) = (uint8_t)(priority))
 #define NVIC_GET_PRIORITY(irqnum) (*((uint8_t *)0xE000E400 + (irqnum)))
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define __disable_irq() __asm__ volatile("CPSID i":::"memory");
-#define __enable_irq()  __asm__ volatile("CPSIE i":::"memory");
+inline void __disable_irq() { __asm__ volatile("CPSID i":::"memory"); }
+inline void __enable_irq() { __asm__ volatile("CPSIE i":::"memory"); }
+
+#ifdef __cplusplus
+};
+#endif
 
 
 // System Control Space (SCS), ARMv7 ref manual, B3.2, page 708

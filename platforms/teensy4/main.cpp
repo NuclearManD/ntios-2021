@@ -29,6 +29,7 @@
  */
 
 #include <Arduino.h>
+#include "includes/core_pins.h"
 
 extern "C" int main(void)
 {

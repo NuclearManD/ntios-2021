@@ -32,6 +32,7 @@
  */
 
 #include <Arduino.h>
+#include "avr/pgmspace.h"
 #include "EventResponder.h"
 
 EventResponder * EventResponder::firstYield = nullptr;

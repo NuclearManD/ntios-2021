@@ -14,6 +14,10 @@ BASE_CPP_FLAGS = "-Wall -Wextra -Werror -Wno-implicit-fallthrough -fmax-errors=5
 BASE_CXX_FLAGS = "-std=gnu++14 -felide-constructors -fpermissive -fno-rtti"
 BASE_C_FLAGS = ""  # None for now
 
+ntios_include_dir = os.path.abspath('ntios_include')
+arduino_include_dir = os.path.abspath('arduino_libcpp/includes')
+include_flags = f' -I{ntios_include_dir} -I{arduino_include_dir}'
+
 def compile_current_directory(build_dst: str, conf: dict) -> (int, list):
     os.makedirs(build_dst, exist_ok=True)
 
@@ -23,7 +27,7 @@ def compile_current_directory(build_dst: str, conf: dict) -> (int, list):
     defines = f'-D__{mcu}__ -DNTIOS_{mcu} -DEXEC_TYPE={executable_type} -DNATIVE_NTIOS=0x20210000'
 
     cpu_flags = conf['cpu_flags']
-    cpp_flags = BASE_CPP_FLAGS + ' ' + conf['cpp_flags'] + ' ' + cpu_flags + ' ' + defines
+    cpp_flags = BASE_CPP_FLAGS + ' ' + conf['cpp_flags'] + ' ' + cpu_flags + ' ' + defines + include_flags
     cxx_flags = BASE_CXX_FLAGS + ' ' + conf['cxx_flags'] + ' ' + cpp_flags
     c_flags   = BASE_C_FLAGS + ' ' + conf['c_flags']   + ' ' + cpp_flags
 
@@ -103,7 +107,8 @@ def build_platform(name: str):
         conf = json.load(f)
 
     cpu_flags = conf['cpu_flags']
-    ld_flags  = f'{conf["ld_flags"]} {cpu_flags} -T{conf["mcu_ld"]}'
+    mcu_ld = f'platforms/{name}/' + conf["mcu_ld"]
+    ld_flags  = f'{conf["ld_flags"]} {cpu_flags} -T{mcu_ld}'
 
     ld = conf['ld']
     objcopy = conf['objcopy']
@@ -128,8 +133,7 @@ def build_platform(name: str):
         print("Failure.  Fix errors.")
         return -1
 
-    print("Compiling NTIOS")
-
+    print("\nCompiling NTIOS")
     os.chdir('../../ntios')
 
     new_errors, new_o_files = compile_current_directory(ntios_build_dir, conf)
@@ -140,7 +144,51 @@ def build_platform(name: str):
         print("Failure.  Fix errors.")
         return -1
 
-    os.chdir('../../ntios')
+
+    print("\nCompiling arduino_libcpp")
+    os.chdir('../arduino_libcpp')
+
+    new_errors, new_o_files = compile_current_directory(ntios_build_dir, conf)
+    errors += new_errors
+    o_files += new_o_files
+
+    if errors > 0:
+        print("Failure.  Fix errors.")
+        return -1
+
+    print("\nLinking...")
+    os.chdir('..')
+
+    elf_file = f'build/{name}.elf'
+    cmd = f'{ld} {ld_flags} -o {elf_file} {" ".join(o_files)}'
+    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc.wait()
+    if proc.returncode != 0:
+        print('\n' + cmd)
+        print(proc.stdout.read().decode() + '\n')
+        sys.stderr.write(proc.stderr.read().decode() + '\n')
+        print('Failure.')
+        return -2
+    else:
+        print(elf_file)
+
+    print("\nDone.\n")
+
+    cmd = f'{size} {elf_file}'
+    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc.wait()
+    print(proc.stdout.read().decode() + '\n')
+    sys.stderr.write(proc.stderr.read().decode() + '\n')
+
+    hex_file = f'build/{name}.hex'
+    cmd = f'{objcopy} -O ihex -R .eeprom {elf_file} {hex_file}'
+    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc.wait()
+    print(proc.stdout.read().decode() + '\n')
+    sys.stderr.write(proc.stderr.read().decode() + '\n')
+
+    return 0
+
 '''
 # automatically create lists of the sources and objects
 # TODO: this does not handle Arduino libraries yet...

@@ -1,6 +1,9 @@
+
 #include "Arduino.h"
 #include "pins_arduino.h"
 #include "debug/printf.h"
+#include "avr/pgmspace.h"
+#include "includes/core_pins.h"
 
 #define DR_INDEX    0
 #define GDIR_INDEX  1
@@ -127,4 +130,8 @@ void detachInterrupt(uint8_t pin)
 	volatile uint32_t *gpio = portOutputRegister(pin);
 	uint32_t mask = digitalPinToBitMask(pin);
 	gpio[IMR_INDEX] &= ~mask;
+}
+
+void trigger_software_irq() {
+	NVIC_SET_PENDING(IRQ_SOFTWARE);
 }

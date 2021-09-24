@@ -1,5 +1,5 @@
 
-#include <Arduino.h>
+#include "avr/pgmspace.h"
 void serialEvent() __attribute__((weak));
 void serialEvent() {
 }
