@@ -10,15 +10,19 @@ Ah yes, the project is run by someone from 42SV :)
 No I'm not going to remove it.  I've added -fpermissive too (that one I PARTICULARLY hate)
 '''
 
-BASE_CPP_FLAGS = "-Wall -Wextra -Werror -Wno-implicit-fallthrough -fmax-errors=5"
+BASE_CPP_FLAGS = "-Wall -Wextra -Werror -Wno-implicit-fallthrough -Wno-nonnull-compare -fmax-errors=5"
 BASE_CXX_FLAGS = "-std=gnu++14 -felide-constructors -fpermissive -fno-rtti"
 BASE_C_FLAGS = ""  # None for now
+BASE_LD_FLAGS = '-Lbuild/libs'
+
+LIBRARY_FLAGS = '-lneon'
 
 ntios_include_dir = os.path.abspath('ntios_include')
 arduino_include_dir = os.path.abspath('arduino_libcpp/includes')
-include_flags = f' -I{ntios_include_dir} -I{arduino_include_dir}'
+neon_include_dir = os.path.abspath('neon-libc/include')
+include_flags = f' -I{ntios_include_dir} -I{arduino_include_dir} -I{neon_include_dir}'
 
-def compile_current_directory(build_dst: str, conf: dict) -> (int, list):
+def compile_current_directory(build_dst: str, conf: dict, extra_flags: str = '') -> (int, list):
     os.makedirs(build_dst, exist_ok=True)
 
     mcu = conf['mcu']
@@ -27,7 +31,7 @@ def compile_current_directory(build_dst: str, conf: dict) -> (int, list):
     defines = f'-D__{mcu}__ -DNTIOS_{mcu} -DEXEC_TYPE={executable_type} -DNATIVE_NTIOS=0x20210000'
 
     cpu_flags = conf['cpu_flags']
-    cpp_flags = BASE_CPP_FLAGS + ' ' + conf['cpp_flags'] + ' ' + cpu_flags + ' ' + defines + include_flags
+    cpp_flags = BASE_CPP_FLAGS + ' ' + conf['cpp_flags'] + ' ' + cpu_flags + ' ' + defines + include_flags + ' ' + extra_flags
     cxx_flags = BASE_CXX_FLAGS + ' ' + conf['cxx_flags'] + ' ' + cpp_flags
     c_flags   = BASE_C_FLAGS + ' ' + conf['c_flags']   + ' ' + cpp_flags
 
@@ -106,13 +110,17 @@ def build_platform(name: str):
     with open(os.path.join(path, 'config.json')) as f:
         conf = json.load(f)
 
+    os.makedirs('build/libs', exist_ok=True)
+
     cpu_flags = conf['cpu_flags']
     mcu_ld = f'platforms/{name}/' + conf["mcu_ld"]
-    ld_flags  = f'{conf["ld_flags"]} {cpu_flags} -T{mcu_ld}'
+    ld_flags  = f'{conf["ld_flags"]} {cpu_flags} -T{mcu_ld} {BASE_LD_FLAGS}'
 
     ld = conf['ld']
     objcopy = conf['objcopy']
+    objdump = conf['objdump']
     size = conf['size']
+    ar = conf['ar']
 
     target = f'ntios_{name}'
 
@@ -121,6 +129,8 @@ def build_platform(name: str):
 
     platform_build_dir = os.path.abspath(f'build/{name}')
     ntios_build_dir = os.path.abspath(f'build/ntios')
+    arduino_build_dir = os.path.abspath(f'build/arduino')
+    neon_libc_build_dir = os.path.abspath(f'build/neon-libc')
 
     print(f"\nCompiling platform {name}\n")
 
@@ -144,11 +154,10 @@ def build_platform(name: str):
         print("Failure.  Fix errors.")
         return -1
 
-
     print("\nCompiling arduino_libcpp")
     os.chdir('../arduino_libcpp')
 
-    new_errors, new_o_files = compile_current_directory(ntios_build_dir, conf)
+    new_errors, new_o_files = compile_current_directory(arduino_build_dir, conf)
     errors += new_errors
     o_files += new_o_files
 
@@ -156,11 +165,34 @@ def build_platform(name: str):
         print("Failure.  Fix errors.")
         return -1
 
-    print("\nLinking...")
+    print("\nCompiling neon-libc")
+    os.chdir('../neon-libc')
+
+    new_errors, neon_o_files = compile_current_directory(neon_libc_build_dir, conf, '-fno-tree-loop-distribute-patterns')
+    errors += new_errors
+
+    if errors > 0:
+        print("Failure.  Fix errors.")
+        return -1
+
     os.chdir('..')
 
+    cmd = f'{ar} rcs build/libs/libneon.a ' + ' '.join(neon_o_files)
+    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc.wait()
+    if proc.returncode != 0:
+        print('\n' + cmd)
+        print(proc.stdout.read().decode() + '\n')
+        sys.stderr.write(proc.stderr.read().decode() + '\n')
+        print('Failure.')
+        return -2
+    else:
+        print('build/libs/neon-libc.a')
+
+    print("\nLinking...")
+
     elf_file = f'build/{name}.elf'
-    cmd = f'{ld} {ld_flags} -o {elf_file} {" ".join(o_files)}'
+    cmd = f'{ld} {ld_flags} -o {elf_file} {" ".join(o_files)} {LIBRARY_FLAGS}'
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     proc.wait()
     if proc.returncode != 0:
@@ -186,6 +218,9 @@ def build_platform(name: str):
     proc.wait()
     print(proc.stdout.read().decode() + '\n')
     sys.stderr.write(proc.stderr.read().decode() + '\n')
+
+    os.system(f'{objdump} -d -S -C build/{name}.elf > build/{name}.lst')
+
 
     return 0
 

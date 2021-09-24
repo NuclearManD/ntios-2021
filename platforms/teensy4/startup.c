@@ -141,6 +141,7 @@ void ResetHandler(void)
 	startup_early_hook();
 	while (millis() < 20) ; // wait at least 20ms before starting USB
 	usb_init();
+	printf("FFOF");
 	analog_init();
 	pwm_init();
 	tempmon_init();

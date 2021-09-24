@@ -189,11 +189,18 @@ FLASHMEM void usb_init(void)
 	//printf("USBPHY1_PWD=%08lX\n", USBPHY1_PWD);
 	//printf("USBPHY1_CTRL=%08lX\n", USBPHY1_CTRL);
 
+	//printf("a");
+
 	USB1_USBMODE = USB_USBMODE_CM(2) | USB_USBMODE_SLOM;
+	//printf("0");
 	memset(endpoint_queue_head, 0, sizeof(endpoint_queue_head));
+	
+	//printf("1");
 	endpoint_queue_head[0].config = (64 << 16) | (1 << 15);
 	endpoint_queue_head[1].config = (64 << 16);
+	//printf("2");
 	USB1_ENDPOINTLISTADDR = (uint32_t)&endpoint_queue_head;
+
 	//  Recommended: enable all device interrupts including: USBINT, USBERRINT,
 	// Port Change Detect, USB Reset Received, DCSuspend.
 	USB1_USBINTR = USB_USBINTR_UE | USB_USBINTR_UEE | /* USB_USBINTR_PCE | */

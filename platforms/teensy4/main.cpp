@@ -29,13 +29,16 @@
  */
 
 #include <Arduino.h>
+#include <stdio.h>
 #include "includes/core_pins.h"
+#include "libneon.h"
 
 extern "C" int main(void)
 {
 
 	// To use Teensy 4.0 without Arduino, simply put your code here.
 	// For example:
+	//printf("Yeet %i\n", wordcount("a b c"));
 
 	pinMode(13, OUTPUT);
 	while (1) {

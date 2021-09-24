@@ -2354,10 +2354,7 @@ extern volatile uint32_t scale_cpu_cycles_to_microseconds;
 extern volatile uint32_t systick_millis_count;
 
 
-inline uint32_t millis(void)
-{
-	return systick_millis_count;
-}
+uint32_t millis(void);
 
 uint32_t micros(void);
 
