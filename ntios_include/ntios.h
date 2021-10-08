@@ -69,12 +69,10 @@ extern StreamDevice* _ntios_debug_port;
 // initialize driver list so OS can run - will set up 
 void ntios_init(Device** devices, int num_devices, StreamDevice* debug = 0);
 
-int add_virtual_device(Device* device);
-void rm_virtual_device(int dev);
+int add_device(Device* device);
+void rm_device(int dev);
 Device* get_device(int dev);
 int num_devices();
-int num_hw_devices();
-int num_virtual_devices();
 
 uint64_t set_cpu_hz(uint64_t frequency);
 uint64_t get_cpu_hz();
@@ -117,7 +115,6 @@ public:
 };
 
 // this should be defined by the code loading/invoking NTIOS for multithreading purposes.
-void yield();
 int get_bootloader_thread_slice_us();
 BootloaderMutex* bootloader_make_mutex();
 
@@ -141,20 +138,24 @@ int ntios_system(int argc, char** argv, StreamDevice* io);
 char backslash_delimit(char c);
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * These functions originally came from Arduino.
  */
 
 uint32_t millis();
 uint32_t micros();
-void delay(uint64_t milliseconds);
-void delayMicroseconds(uint64_t microseconds);
+void delay(uint32_t milliseconds);
+void delayMicroseconds(uint32_t microseconds);
 
+/*
+ * Other functions with C linkage
+ */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+void yield();
 void trigger_software_irq();
 void __enable_irq();
 void __disable_irq();

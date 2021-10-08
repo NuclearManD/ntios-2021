@@ -1,10 +1,10 @@
 
-#include "graphics/graphics.h"
-#include "gpio_expanders/MCP23017.h"
-#include "../drivers.h"
-#include "../ntios.h"
-#include "../navigation.h"
-#include "../actuation.h"
+#include "drivers/graphics/graphics.h"
+#include "drivers/gpio_expanders/MCP23017.h"
+#include "drivers.h"
+#include "ntios.h"
+#include "navigation.h"
+#include "actuation.h"
 
 // TODO: not use these globals in this file directly
 
@@ -31,14 +31,14 @@ int __ntios_device_cli_utils(int argc, const char** argv, StreamDevice* io) {
 		if (argc > 1) {
 			result = 0;
 			int i = atoi(argv[1]);
-			if (i < num_hw_devices()) {
+			if (i < num_devices()) {
 				result = -2;
 				io->printf("Cannot remove device %i\n", i);
 			} else if (i >= num_devices()) {
 				result = -3;
 				io->printf("No device %i\n", i);
 			} else
-				rm_virtual_device(i);
+				rm_device(i);
 		} else {
 			io->println(F("usage: rmdev DEV"));
 			result = -1;
@@ -59,7 +59,6 @@ int __ntios_device_cli_utils(int argc, const char** argv, StreamDevice* io) {
 				result = -3;
 			} else {
 				SerialDevice* dev = (SerialDevice*)raw;
-				Serial.println(dev->getName());
 				io->println("Press ` to exit.");
 				while (true) {
 					if (io->available()) {
@@ -127,7 +126,7 @@ int __ntios_device_cli_utils(int argc, const char** argv, StreamDevice* io) {
 					if (argc > 3)
 						name = argv[3];
 					StreamDevice* dev = (StreamDevice*)get_device(port);
-					add_virtual_device(new NMEARawGPS(dev, name));
+					add_device(new NMEARawGPS(dev, name));
 					result = 0;
 				}
 			}
@@ -149,7 +148,7 @@ int __ntios_device_cli_utils(int argc, const char** argv, StreamDevice* io) {
 					if (argc > 3)
 						name = argv[3];
 					PWMPin* dev = (PWMPin*)get_device(port);
-					add_virtual_device(new PWMActuator(dev, name));
+					add_device(new PWMActuator(dev, name));
 					result = 0;
 				}
 			}
@@ -168,7 +167,7 @@ int __ntios_device_cli_utils(int argc, const char** argv, StreamDevice* io) {
 					result = -3;
 				} else {
 					I2CBusDevice* dev = (I2CBusDevice*)get_device(port);
-					add_virtual_device(new MCP23017(dev));
+					add_device(new MCP23017(dev));
 					result = 0;
 				}
 			}

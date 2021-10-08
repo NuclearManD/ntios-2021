@@ -30,22 +30,40 @@
 
 #include <Arduino.h>
 #include <stdio.h>
-#include "includes/core_pins.h"
+#include "drivers.h"
+#include "ntios.h"
 #include "libneon.h"
+#include "platform.h"
+
+
+extern "C" void digitalWrite(int pin, bool val);
 
 extern "C" int main(void)
 {
+	_get_devices_retval_t devinfo = _platform_get_devices();
 
-	// To use Teensy 4.0 without Arduino, simply put your code here.
-	// For example:
-	//printf("Yeet %i\n", wordcount("a b c"));
+	//StreamDevice& ser = *(devinfo.primary_stream);
 
-	pinMode(13, OUTPUT);
-	while (1) {
-		digitalWriteFast(13, HIGH);
-		delay(800);
-		digitalWriteFast(13, LOW);
-		delay(500);
-	}
+	delay(500);
+	ntios_init(devinfo.device_list, devinfo.num_devices, devinfo.primary_stream);
+	//create_new_shell(ser);
+	ntios_shell(devinfo.primary_stream);
 }
 
+bool launch(int argc, char** argv, StreamDevice* io) {
+	(void)argc;
+	(void)argv;
+	(void)io;
+	return false;
+}
+
+bool start_function(void (*f)(void* param), void* param, int stack_size) {
+	(void)f;
+	(void)param;
+	(void)stack_size;
+	return false;
+}
+
+BootloaderMutex* bootloader_make_mutex() {
+	return nullptr;
+}

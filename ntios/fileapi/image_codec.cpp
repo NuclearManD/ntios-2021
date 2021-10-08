@@ -1,7 +1,7 @@
 
 #include <stdlib.h>
-#include "image_codec.h"
-#include "../drivers/graphics/color.h"
+#include "fileapi/image_codec.h"
+#include "drivers/graphics/color.h"
 
 const uint8_t png_signature[] = { 137, 80, 78, 71, 13, 10, 26, 10 };
 
@@ -35,7 +35,7 @@ static png_chunk_t get_png_chunk(NTIOSFile* file) {
 	chunk.length = bytesToUint32(buf);
 
 	// Detect not enough bytes
-	if (file->available() < chunk.length + 4) {
+	if (file->available() < (long)chunk.length + 4) {
 		chunk.length = -1;
 		return chunk;
 	}

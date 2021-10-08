@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include "emulator.h"
 #include "flow_and_shape.h"
-#include "memory.h"
+#include "emuarch_memory.h"
+#include "emuarch_strings.h"
 #include "system.h"
 #include "strings.h"
 

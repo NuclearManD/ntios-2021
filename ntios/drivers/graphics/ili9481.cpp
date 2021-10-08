@@ -1,6 +1,6 @@
 
 #include <stdint.h>
-#include "ili9481.h"
+#include "drivers/graphics/ili9481.h"
 
 #define COMMAND 0
 #define DATA 1
@@ -69,7 +69,7 @@ ILI9481::ILI9481(Bus8080* bus8080, GPIODevice* gpio, int rst, int im0, int im1, 
 
 void ILI9481::send_sequence(const uint8_t* sequence) {
 	uint8_t len;
-	while (len = *(sequence++)) {
+	while ((len = *(sequence++))) {
 		if (len == 255) {
 			delay(10);
 		} else {
@@ -195,10 +195,10 @@ int ILI9481::setTextCursor(int x, int y) {
 	return 0;
 }
 
-int ILI9481::getTextLines() {
+uint32_t ILI9481::getTextLines() {
 	return 0;
 }
 
-int ILI9481::getTextColumns() {
+uint32_t ILI9481::getTextColumns() {
 	return 0;
 }

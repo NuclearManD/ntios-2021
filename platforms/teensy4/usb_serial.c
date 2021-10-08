@@ -46,6 +46,7 @@
 // USB to work reliably.  But the precious/limited DTCM is.  So
 // as an ugly workaround, undefine DMAMEM so all buffers which
 // would normally be allocated in OCRAM are placed in DTCM.
+// TODO: Handle changing CPU speeds
 #if defined(F_CPU) && F_CPU < 30000000
 #undef DMAMEM
 #define DMAMEM

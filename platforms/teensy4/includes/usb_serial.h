@@ -68,10 +68,11 @@ extern volatile uint8_t usb_configuration;
 
 // C++ interface
 #ifdef __cplusplus
-#include "Stream.h"
-class usb_serial_class : public Stream
+#include "drivers.h"
+class usb_serial_class : public StreamDevice
 {
 public:
+	const char* getName() { return "USBSerial1"; }
 	constexpr usb_serial_class() {}
         void begin(long) {
 		uint32_t millis_begin = systick_millis_count;
@@ -131,10 +132,11 @@ extern void serialEvent(void);
 
 // Allow Arduino programs using Serial to compile, but Serial will do nothing.
 #ifdef __cplusplus
-#include "Stream.h"
+#include "drivers.h"
 class usb_serial_class : public Stream
 {
 public:
+	const char* getName() { return "USBSerial1"; }
     constexpr usb_serial_class() {}
         void begin(long) { };
         void end() { };
@@ -198,10 +200,11 @@ extern volatile uint8_t usb_cdc2_transmit_flush_timer;
 
 // C++ interface
 #ifdef __cplusplus
-#include "Stream.h"
-class usb_serial2_class : public Stream
+#include "drivers.h"
+class usb_serial2_class : public StreamDevice
 {
 public:
+		const char* getName() { return "USBSerial2"; }
         constexpr usb_serial2_class() {}
         void begin(long) {
                 //uint32_t millis_begin = systick_millis_count;
@@ -286,10 +289,11 @@ extern volatile uint8_t usb_cdc3_transmit_flush_timer;
 
 // C++ interface
 #ifdef __cplusplus
-#include "Stream.h"
-class usb_serial3_class : public Stream
+#include "drivers.h"
+class usb_serial3_class : public StreamDevice
 {
 public:
+	const char* getName() { return "USBSerial3"; }
         constexpr usb_serial3_class() {}
         void begin(long) {
                 //uint32_t millis_begin = systick_millis_count;

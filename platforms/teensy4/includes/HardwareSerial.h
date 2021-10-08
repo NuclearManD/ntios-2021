@@ -32,6 +32,7 @@
 #define HardwareSerial_h
 
 #include "imxrt.h"
+#include "drivers.h"
 
 // Uncomment to enable 9 bit formats.  These are default disabled to save memory.
 //#define SERIAL_9BIT_SUPPORT
@@ -151,7 +152,7 @@ extern const pin_to_xbar_info_t pin_to_xbar_info[];
 extern const uint8_t count_pin_to_xbar_info;
 
 
-class HardwareSerial : public Stream
+class HardwareSerial : public StreamDevice
 {
 public:
 	static const uint8_t cnt_tx_pins = 2;
@@ -183,10 +184,10 @@ public:
 public:
 	constexpr HardwareSerial(IMXRT_LPUART_t *myport, const hardware_t *myhardware, 
 		volatile BUFTYPE *_tx_buffer, size_t _tx_buffer_size, 
-		volatile BUFTYPE *_rx_buffer, size_t _rx_buffer_size) :
+		volatile BUFTYPE *_rx_buffer, size_t _rx_buffer_size, const char* name) :
 		port(myport), hardware(myhardware),
 		tx_buffer_(_tx_buffer), rx_buffer_(_rx_buffer), tx_buffer_size_(_tx_buffer_size),  rx_buffer_size_(_rx_buffer_size),
-		tx_buffer_total_size_(_tx_buffer_size), rx_buffer_total_size_(_rx_buffer_size) {
+		tx_buffer_total_size_(_tx_buffer_size), rx_buffer_total_size_(_rx_buffer_size), name(name) {
 	}
 	void begin(uint32_t baud, uint16_t format=0);
 	void end(void);
@@ -239,6 +240,8 @@ public:
 			s_serials_with_serial_events[i]->doYieldCode();
 		}
 	}
+
+	const char* getName();
 private:
 	IMXRT_LPUART_t * const port;
 	const hardware_t * const hardware;
@@ -292,7 +295,7 @@ private:
 	}
 
 
-
+	const char* name;
 };
 extern HardwareSerial Serial1;
 extern HardwareSerial Serial2;

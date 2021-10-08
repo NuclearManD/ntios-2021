@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include "emulator.h"
 #include "emuarch_memory.h"
+#include "emuarch_strings.h"
 
 #include <stdio.h>
 

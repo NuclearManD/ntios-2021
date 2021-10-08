@@ -1,6 +1,6 @@
-#include "Arduino.h"
+
 #include <stdlib.h>
-#include "memory.h"
+#include "emuarch_memory.h"
 
 uint8_t* global_code;
 uint8_t* global_ram;

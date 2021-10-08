@@ -50,6 +50,8 @@ public:
 	virtual operator bool() = 0;
 
 	virtual bool available() = 0;
+
+	virtual ~AudioDecoder() {}
 };
 
 /*
@@ -83,6 +85,8 @@ public:
 	bool available() { return file->available(); }
 
 	operator bool() { return file != nullptr; }
+
+	~AudioDecoderNAF();
 };
 
 

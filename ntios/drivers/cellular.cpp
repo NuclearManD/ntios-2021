@@ -1,6 +1,6 @@
 
-#include "../ntios.h"
-#include "cellular.h"
+#include "ntios.h"
+#include "drivers/cellular.h"
 
 #include <stdarg.h>
 
@@ -51,7 +51,7 @@ TCPConnection* UARTCellularDevice::connect(const char* host, int port) {
 
 		// Get rid of the extra OK
 		uartRead(100);
-		Serial.println(socket_id);
+		//Serial.println(socket_id);
 
 		// Attempt a connection
 		if (!sendCommand("AT+USOCO=%i,%s,%i", socket_id, host, port))
@@ -85,12 +85,12 @@ bool UARTCellularDevice::connect() {
 
 	for (int i = 0; i < 10; i++) {
 		if (sendCommand("AT")) {
-			Serial.println(uart_buffer);
+			//Serial.println(uart_buffer);
 			if (strcmp(uart_buffer, "OK") == 0)
 				break;
 		}
 		else
-			Serial.println("[no reply]");
+			//Serial.println("[no reply]");
 
 		if (i==9) {
 			is_connected = false;
@@ -99,8 +99,8 @@ bool UARTCellularDevice::connect() {
 		}
 	}
 
-	Serial.println("Device detected");
-	Serial.flush();
+	//Serial.println("Device detected");
+	//Serial.flush();
 
 	// We checked the serial link, but we already connected, so assume it still works.
 	// To force reconnection, call disconnect() first.
@@ -205,6 +205,7 @@ bool UARTCellularDevice::call(const char* number) {
 	UART_LOCK
 	sendCommand("ATD + +%s;", number);
 	UART_UNLOCK
+	return false; // TODO: Fix this, check if call went through
 }
 
 void UARTCellularDevice::hangup() {
@@ -231,11 +232,12 @@ bool UARTCellularDevice::sendTextMessage(const char* number, const char* message
 
 	UART_LOCK
 	sendCommand("AT+CMGF=1");
-	uart.println("AT+CMGS=\"+%s\"");
+	uart.printf("AT+CMGS=\"+%s\"\n", number);
 	delay(100);
 	uart.println(message);
 	uart.write(CTRL_Z);
 	UART_UNLOCK
+	return true; // TODO: Check that this didn't fail
 }
 
 bool UARTCellularDevice::uartRead(long timeout_millis) {
@@ -270,8 +272,8 @@ bool UARTCellularDevice::sendCommand(const char* fmt, ...) {
 	int i = 0;
 
 	va_start(ap, fmt);
-	Serial.println(fmt);
-	Serial.flush();
+	//Serial.println(fmt);
+	//Serial.flush();
 	while (fmt[i]) {
 		if (fmt[i] == '%' && fmt[i + 1] == 's') {
 			uart.write(fmt, (size_t)i);

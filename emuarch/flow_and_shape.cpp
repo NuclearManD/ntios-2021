@@ -1,6 +1,7 @@
 
 #include <stdint.h>
-#include "memory.h"
+#include "emuarch_memory.h"
+
 
 void run_flow(int64_t*	regs0, int32_t*	regs1, int64_t address)
 {

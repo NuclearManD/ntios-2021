@@ -62,5 +62,5 @@ static HardwareSerial::hardware_t UART2_Hardware = {
 	XBARA1_OUT_LPUART2_TRG_INPUT
 };
 HardwareSerial Serial3(&IMXRT_LPUART2, &UART2_Hardware,tx_buffer3, SERIAL3_TX_BUFFER_SIZE,
-	rx_buffer3,  SERIAL3_RX_BUFFER_SIZE);
+	rx_buffer3,  SERIAL3_RX_BUFFER_SIZE, "Serial3");
 

@@ -1,5 +1,8 @@
 
 #include "emu.h"
+#include "emulator.h"
+#include "system.h"
+#include "emuarch_memory.h"
 #include "ntios.h"
 #include "drivers.h"
 #include "navigation.h"
@@ -9,6 +12,8 @@
 int64_t heap_top = RAM_OFFSET;
 
 int launch_emu(StreamDevice* io, uint8_t* code, int argc, char** argv){
+	(void)argc;
+	(void)argv;
 	int result;
 
 	setup_memory(code, MEMORY_SIZE);
@@ -97,13 +102,13 @@ void emuarch_syscall(t_emuarch_cpu* cpu, uint16_t id, StreamDevice* io){
 		if (!dst)
 			cpu->reg_set_0[0] = 0;
 		else {
-			if (file = getEmuFile(cpu, cpu->reg_set_0[3])) {
+			if ((file = getEmuFile(cpu, cpu->reg_set_0[3]))) {
 				int i = 0;
 				while (file->available() && i < cpu->reg_set_1[6]) {
 					dst[i++] = file->read();
 				}
 				cpu->reg_set_0[0] = i;
-			} else if (tcp = getEmuTcp(cpu, cpu->reg_set_0[3])) {
+			} else if ((tcp = getEmuTcp(cpu, cpu->reg_set_0[3]))) {
 				int i = 0;
 				while (tcp->available() && i < cpu->reg_set_1[6]) {
 					dst[i++] = tcp->read();
@@ -120,13 +125,13 @@ void emuarch_syscall(t_emuarch_cpu* cpu, uint16_t id, StreamDevice* io){
 		if (!src)
 			cpu->reg_set_0[0] = 0;
 		else {
-			if (file = getEmuFile(cpu, cpu->reg_set_0[3])) {
+			if ((file = getEmuFile(cpu, cpu->reg_set_0[3]))) {
 				int i = 0;
 				while (i < cpu->reg_set_1[6]) {
 					file->write(src[i++]);
 				}
 				cpu->reg_set_0[0] = i;
-			} else if (tcp = getEmuTcp(cpu, cpu->reg_set_0[3])) {
+			} else if ((tcp = getEmuTcp(cpu, cpu->reg_set_0[3]))) {
 				int i = 0;
 				while (i < cpu->reg_set_1[6]) {
 					tcp->write(src[i++]);
@@ -138,24 +143,24 @@ void emuarch_syscall(t_emuarch_cpu* cpu, uint16_t id, StreamDevice* io){
 	} else if (id == SYSCALL_TELL) {
 		NTIOSFile* file;
 
-		if (file = getEmuFile(cpu, cpu->reg_set_0[3]))
+		if ((file = getEmuFile(cpu, cpu->reg_set_0[3])))
 			cpu->reg_set_0[0] = file->position();
 		else
 			cpu->reg_set_0[0] = -1;
 	} else if (id == SYSCALL_SEEK) {
 		NTIOSFile* file;
 
-		if (file = getEmuFile(cpu, cpu->reg_set_0[3]))
+		if ((file = getEmuFile(cpu, cpu->reg_set_0[3])))
 			file->seek(cpu->reg_set_0[0]);
 	} else if (id == SYSCALL_CLOSE) {
 		NTIOSFile* file;
 		TCPConnection* tcp;
 
-		if (file = getEmuFile(cpu, cpu->reg_set_0[3])) {
+		if ((file = getEmuFile(cpu, cpu->reg_set_0[3]))) {
 			file->close();
 			free(file);
 			cpu->files[cpu->reg_set_0[3]] = NULL;
-		} else if (tcp = getEmuTcp(cpu, cpu->reg_set_0[3])) {
+		} else if ((tcp = getEmuTcp(cpu, cpu->reg_set_0[3]))) {
 			tcp->close();
 			free(tcp);
 			cpu->tcps[cpu->reg_set_0[3] + TCP_OFFSET] = NULL;

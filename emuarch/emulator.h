@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #include "ntios.h"
+#include "emu.h"
 
 // I am not yet implementing support for floats
 #define EMULATOR_FEATURES 0x00000
@@ -17,19 +18,6 @@
 #define CR0	reg_set_1[7]
 
 #define ERROR_INVALID_INSTRUCTION -1121
-
-typedef struct s_emuarch_cpu{
-	int64_t	reg_set_0[8];
-	int32_t	reg_set_1[8];
-	float	reg_set_2[8];
-	uint64_t total_operations;
-
-	NTIOSFile** files;
-	int num_files;
-	TCPConnection** tcps;
-	int num_tcps;
-
-}	t_emuarch_cpu;
 
 t_emuarch_cpu* make_cpu(int64_t pc, int64_t sp);
 void cleanup_cpu(t_emuarch_cpu* cpu);

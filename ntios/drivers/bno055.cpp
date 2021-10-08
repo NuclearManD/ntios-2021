@@ -1,9 +1,8 @@
 
-#include "../drivers.h"
-#include "../ntios.h"
-#include "imu_drivers.h"
+#include "drivers.h"
+#include "ntios.h"
+#include "drivers/imu_drivers.h"
 #include "../csvlog.h"
-#include <Arduino.h>
 
 /*
  * Based on code from Adafruit BNO055 library
@@ -94,7 +93,7 @@ void BNO055::configure() {
 		strcpy(cal_fn, caldir);
 		strcat(cal_fn, "acc");
 
-		Serial.println(cal_fn);
+		//Serial.println(cal_fn);
 		if (fsexists(cal_fn)) {
 			// load accelerometer calibrations
 			file = fsopen(cal_fn);

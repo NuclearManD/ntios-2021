@@ -62,4 +62,4 @@ static HardwareSerial::hardware_t UART7_Hardware = {
 	XBARA1_OUT_LPUART7_TRG_INPUT
 };
 HardwareSerial Serial7(&IMXRT_LPUART7, &UART7_Hardware, tx_buffer7, SERIAL7_TX_BUFFER_SIZE,
-	rx_buffer7,  SERIAL7_RX_BUFFER_SIZE);
+	rx_buffer7,  SERIAL7_RX_BUFFER_SIZE, "Serial7");

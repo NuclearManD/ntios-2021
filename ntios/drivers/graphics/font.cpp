@@ -1,6 +1,6 @@
 
-#include "font.h"
-#include "graphics.h"
+#include "drivers/graphics/font.h"
+#include "drivers/graphics/graphics.h"
 
 const uint8_t font_bits[94][12] = {
 	{ // 0x21 = !
@@ -1325,9 +1325,9 @@ void default_font_drawChar(GraphicsDisplayDevice* disp, uint16_t color, int sx, 
 	if (c <= 32 || c >= 127)
 		return;
 
-	char* symbol = font_bits[c - 0x21]; // Font starts at the exclamation mark
+	const uint8_t* symbol = font_bits[c - 0x21]; // Font starts at the exclamation mark
 	for (int y = 0; y < 12; y++) {
-		char line = symbol[y];
+		uint8_t line = symbol[y];
 		for (int x = 0; x < 8; x++) {
 			if ((line << x) & 0x80)
 				disp->setPixel(sx + x, sy + y, color);

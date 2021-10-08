@@ -11,7 +11,7 @@
 class GraphicsDisplayDevice: public StreamDevice {
 protected:
 	BitmapFont& font = *(new DefaultFont());
-	int cursor_x = 0, cursor_y = 0;
+	uint32_t cursor_x = 0, cursor_y = 0;
 	uint16_t text_color = 0xFFFF;
 
 public:
@@ -32,8 +32,8 @@ public:
 	// By default we can't do this:
 	virtual void scrollDownPixels(uint32_t pixels) { (void) pixels; }
 
-	virtual int getTextLines() { return getHeight() / font.getCharHeight(); }
-	virtual int getTextColumns() { return getWidth() / font.getCharWidth(); }
+	virtual uint32_t getTextLines() { return getHeight() / font.getCharHeight(); }
+	virtual uint32_t getTextColumns() { return getWidth() / font.getCharWidth(); }
 	virtual uint32_t getWidth() = 0;
 	virtual uint32_t getHeight() = 0;
 

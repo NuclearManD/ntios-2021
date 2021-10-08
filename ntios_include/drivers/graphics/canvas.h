@@ -26,7 +26,7 @@ public:
 	void fillRect(uint x1, uint y1, uint x2, uint y2, uint16_t color);
 	void setPixel(uint x, uint y, uint16_t color);
 	void drawCircle(uint x, uint y, uint r, uint16_t color);
-	void drawBitmap16(int x, int y, int w, int h, uint16_t* data);
+	void drawBitmap16(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint16_t* data);
 	size_t write(uint8_t c);
 
 	int available() { return 0; }

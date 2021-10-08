@@ -5,8 +5,8 @@
 // Geez...
 // Thank goodness someone was kind enough to make that Arduino library and put it on GitHub.
 
-#include "../ctp_drivers.h"
-#include "../../ntios.h"
+#include "drivers/ctp_drivers.h"
+#include "ntios.h"
 
 #define GT911_ADDRESS 0x5D
 
@@ -186,7 +186,7 @@ bool GT911Touch::read(uint16_t address, uint8_t* buffer, int length) {
 
 	i2c->lock();
 
-	if (!i2c->write(GT911_ADDRESS, 2, adrbuf)) {
+	if (!i2c->write(GT911_ADDRESS, 2, (const char*)adrbuf)) {
 		//Serial.println("Write failure.");
 		i2c->unlock();
 		return false;
@@ -196,7 +196,7 @@ bool GT911Touch::read(uint16_t address, uint8_t* buffer, int length) {
 	int errors_left = 3;
 	//Serial.printf("Reading %i bytes\n", length);
 	while (pos < length) {
-		int more = i2c->readSome(GT911_ADDRESS, length - pos, &(buffer[pos]));
+		int more = i2c->readSome(GT911_ADDRESS, length - pos, (char*)&(buffer[pos]));
 		if (more == 0)
 			if (errors_left-- == 0) {
 				//Serial.printf("Read failure, %i bytes read of %i\n", pos, length);
@@ -220,7 +220,7 @@ bool GT911Touch::write(uint16_t address, uint8_t* buffer, int length) {
 
 	i2c->lock();
 
-	if (!i2c->write(GT911_ADDRESS, length + 2, fullbuf)) {
+	if (!i2c->write(GT911_ADDRESS, length + 2, (const char*)fullbuf)) {
 		i2c->unlock();
 		return false;
 	}
@@ -239,7 +239,7 @@ bool GT911Touch::write(uint16_t address, uint8_t val) {
 
 	i2c->lock();
 
-	if (!i2c->write(GT911_ADDRESS, 3, fullbuf)) {
+	if (!i2c->write(GT911_ADDRESS, 3, (const char*)fullbuf)) {
 		i2c->unlock();
 		return false;
 	}

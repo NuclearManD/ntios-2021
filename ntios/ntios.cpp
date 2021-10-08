@@ -12,11 +12,8 @@
 
 void _ntios_nav_cb(NavigationDevice* dev);
 
-Device** _ntios_virtual_devices;
-int _ntios_virtual_device_count;
-
-Device** _ntios_hw_devices;
-int _ntios_hw_device_count;
+Device** _ntios_devices;
+int _ntios_device_count;
 
 StreamDevice* _ntios_debug_port;
 
@@ -42,12 +39,10 @@ uint64_t get_last_update_time() {
 
 // initialize driver list so OS can run - will set up 
 void ntios_init(Device** devices, int num_devices, StreamDevice* debug) {
-	_ntios_hw_devices = devices;
-	_ntios_hw_device_count = num_devices;
 
-	_ntios_virtual_devices = (Device**)malloc(0);
-	_ntios_virtual_device_count = 0;
-	
+	_ntios_devices = (Device**)malloc(num_devices);
+	memcpy(_ntios_devices, devices, sizeof(Device*)*num_devices);
+	_ntios_device_count = num_devices;
 
 	_ntios_debug_port = debug;
 	DEBUG_PRINTF("NTIOS Initialized.\n");
@@ -59,45 +54,33 @@ void ntios_init(Device** devices, int num_devices, StreamDevice* debug) {
 	}
 }
 
-int add_virtual_device(Device* device) {
-	int i = ++_ntios_virtual_device_count;
-	_ntios_virtual_devices = (Device**)realloc(_ntios_virtual_devices, sizeof(Device*) * i);
-	_ntios_virtual_devices[--i] = device;
+int add_device(Device* device) {
+	int i = ++_ntios_device_count;
+	_ntios_devices = (Device**)realloc(_ntios_devices, sizeof(Device*) * i);
+	_ntios_devices[--i] = device;
 	if (device->getType() == DEV_TYPE_GPS_RAW)
 		((NavigationDevice*)device)->add_callback(_ntios_nav_cb);
-	return i + _ntios_hw_device_count;
+	return i;
 }
 
-void rm_virtual_device(int dev) {
-	dev = dev - _ntios_hw_device_count;
-	if (dev < 0 || dev >= _ntios_virtual_device_count)
+void rm_device(int dev) {
+	if (dev < 0 || dev >= _ntios_device_count)
 		return;
-	int i = --_ntios_virtual_device_count;
-	_ntios_virtual_devices[dev] = _ntios_virtual_devices[i];
-	_ntios_virtual_devices = (Device**)realloc(_ntios_virtual_devices, sizeof(Device*) * i);
+	int i = --_ntios_device_count;
+	_ntios_devices[dev] = _ntios_devices[i];
+	_ntios_devices = (Device**)realloc(_ntios_devices, sizeof(Device*) * i);
 }
 
 Device* get_device(int dev) {
 	if (dev < 0)
 		return NULL;
-	if (dev < _ntios_hw_device_count)
-		return _ntios_hw_devices[dev];
-	dev -= _ntios_hw_device_count;
-	if (dev < _ntios_virtual_device_count)
-		return _ntios_virtual_devices[dev];
+	if (dev < _ntios_device_count)
+		return _ntios_devices[dev];
 	return NULL;
 }
 
 int num_devices() {
-	return _ntios_hw_device_count + _ntios_virtual_device_count;
-}
-
-int num_hw_devices() {
-	return _ntios_hw_device_count;
-}
-
-int num_virtual_devices() {
-	return _ntios_virtual_device_count;
+	return _ntios_device_count;
 }
 
 double get_cpu_usage_percent() {
@@ -160,13 +143,9 @@ void ntios_yield() {
 	__ntios_ls_stack_top = &top;
 
 	ntios_last_update_unix = get_unix_millis();
-	for (int i = 0; i < _ntios_hw_device_count; i++) {
+	for (int i = 0; i < _ntios_device_count; i++) {
 		last_updating_device = i;
-		_ntios_hw_devices[i]->update();
-	}
-	for (int i = 0; i < _ntios_virtual_device_count; i++) {
-		last_updating_device = i + _ntios_hw_device_count;
-		_ntios_virtual_devices[i]->update();
+		_ntios_devices[i]->update();
 	}
 	check_cpu_clock();
 	update_load_monitor();
@@ -177,15 +156,9 @@ TCPConnection* tcpopen(const char* host, int port) {
 	TCPConnection* tcp;
 
 	// process virtual first in case we ever add VPNs or anything like that
-	for (int i = 0; i < _ntios_virtual_device_count; i++) {
-		if (_ntios_virtual_devices[i]->getType() >> 8 == 4) {
-			tcp = ((NetworkDevice*)_ntios_virtual_devices[i])->connect(host, port);
-			if (tcp != NULL) return tcp;
-		}
-	}
-	for (int i = 0; i < _ntios_hw_device_count; i++) {
-		if (_ntios_hw_devices[i]->getType() >> 8 == 4) {
-			tcp = ((NetworkDevice*)_ntios_hw_devices[i])->connect(host, port);
+	for (int i = 0; i < _ntios_device_count; i++) {
+		if (_ntios_devices[i]->getType() >> 8 == 4) {
+			tcp = ((NetworkDevice*)_ntios_devices[i])->connect(host, port);
 			if (tcp != NULL) return tcp;
 		}
 	}
@@ -220,9 +193,9 @@ uint64_t set_cpu_hz(uint64_t frequency) {
 		if (frequency > MAX_BURST_SPEED) frequency = MAX_BURST_SPEED;
 
 		// Flush all streams before changing CPU speed, otherwise we may lose bytes
-		for (int i = 0; i < _ntios_hw_device_count; i++) {
-			if ((_ntios_hw_devices[i]->getType() & 0xFF00) == DEV_TYPE_STREAM)
-				((SerialDevice*)_ntios_hw_devices[i])->flush();
+		for (int i = 0; i < _ntios_device_count; i++) {
+			if ((_ntios_devices[i]->getType() & 0xFF00) == DEV_TYPE_STREAM)
+				((SerialDevice*)_ntios_devices[i])->flush();
 		}
 
 		__ntios_internal_clock_speed = set_arm_clock(frequency);

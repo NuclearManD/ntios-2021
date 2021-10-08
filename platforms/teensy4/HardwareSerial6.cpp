@@ -64,4 +64,4 @@ static HardwareSerial::hardware_t UART1_Hardware = {
 };
 
 HardwareSerial Serial6(&IMXRT_LPUART1, &UART1_Hardware, tx_buffer6, SERIAL6_TX_BUFFER_SIZE,
-	rx_buffer6,  SERIAL6_RX_BUFFER_SIZE);
+	rx_buffer6,  SERIAL6_RX_BUFFER_SIZE, "Serial6");

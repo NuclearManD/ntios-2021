@@ -31,6 +31,9 @@
 #include <Arduino.h>
 #include "usb_desc.h"
 #include "usb_serial.h"
+#include "usb_keyboard.h"
+#include "usb_mouse.h"
+#include "usb_joystick.h"
 
 #if F_CPU >= 20000000
 

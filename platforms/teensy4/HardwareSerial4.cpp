@@ -64,7 +64,7 @@ static HardwareSerial::hardware_t UART3_Hardware = {
 	XBARA1_OUT_LPUART3_TRG_INPUT
 };
 HardwareSerial Serial4(&IMXRT_LPUART3, &UART3_Hardware, tx_buffer4, SERIAL4_TX_BUFFER_SIZE,
-	rx_buffer4,  SERIAL4_RX_BUFFER_SIZE);
+	rx_buffer4,  SERIAL4_RX_BUFFER_SIZE, "Serial4");
 #else
 static HardwareSerial::hardware_t UART4_Hardware = {
     1, IRQ_LPUART4, &IRQHandler_Serial4, 
@@ -78,5 +78,5 @@ static HardwareSerial::hardware_t UART4_Hardware = {
     XBARA1_OUT_LPUART4_TRG_INPUT
 };
 HardwareSerial Serial4(&IMXRT_LPUART4, &UART4_Hardware, tx_buffer4, SERIAL4_TX_BUFFER_SIZE, 
-    rx_buffer4,  SERIAL4_RX_BUFFER_SIZE);
+    rx_buffer4,  SERIAL4_RX_BUFFER_SIZE, "Serial4");
 #endif

@@ -78,7 +78,7 @@ static void do_login(StreamDevice* io, char* login_sha256_hash) {
 int ntios_shell(StreamDevice* io, char* login_sha256_hash) {
 	char c;
 	String input;
-	bool did_os_stall = false;
+	//bool did_os_stall = false;
 
 	// Check if we need a login
 	do_login(io, login_sha256_hash);
@@ -87,7 +87,7 @@ int ntios_shell(StreamDevice* io, char* login_sha256_hash) {
 		input = "";
 		io->print(" > ");
 		while (true) {
-			if (!did_os_stall) {
+			/*if (!did_os_stall) {
 				did_os_stall = check_os_stall();
 				if (did_os_stall) {
 					io->println("\n***ERROR: OS STOPPED***");
@@ -97,7 +97,7 @@ int ntios_shell(StreamDevice* io, char* login_sha256_hash) {
 									get_last_updating_device(),
 									get_device(get_last_updating_device())->getName());
 				}
-			}
+			}*/
 			if (io->available()){
 				c = io->read();
 				if (c == 8) {
@@ -766,8 +766,6 @@ int ntios_system(int argc, char** argv, StreamDevice* io) {
 			free(buffer);
 		}else
 			io->println("Error: file not found");
-	} else if ((result = builtin_system(argc, argv, io)) == -100)
-		if ((result = __ntios_device_cli_utils(argc, (const char**)argv, io)) == -100)
-			io->printf("Error: not a command '%s'\n", cmd);
+	}
 	return result;
 }

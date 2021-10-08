@@ -1,5 +1,5 @@
 
-#include "canvas.h"
+#include "drivers/graphics/canvas.h"
 #include "math.h"
 
 DefaultFont* _global_default_font = new DefaultFont();
@@ -66,7 +66,7 @@ void Canvas::drawCircle(uint x, uint y, uint r, uint16_t color) {
 	}
 }
 
-void Canvas::drawBitmap16(int x, int y, int w, int h, uint16_t* data) {
+void Canvas::drawBitmap16(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint16_t* data) {
 	if (x > width)
 		return;
 	if (y > height)

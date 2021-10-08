@@ -69,7 +69,7 @@ const HardwareSerial::hardware_t UART6_Hardware = {
 	XBARA1_OUT_LPUART6_TRG_INPUT	// XBar Tigger 
 };
 HardwareSerial Serial1(&IMXRT_LPUART6, &UART6_Hardware, tx_buffer1, SERIAL1_TX_BUFFER_SIZE,
-	rx_buffer1,  SERIAL1_RX_BUFFER_SIZE);
+	rx_buffer1,  SERIAL1_RX_BUFFER_SIZE, "Serial1");
 
 //void serialEvent1() __attribute__((weak));
 //void serialEvent1() {Serial1.disableSerialEvents(); }		// No use calling this so disable if called...

@@ -19,8 +19,8 @@ public:
 	const char* getName() { return "ILI9481 Display"; }
 
 	int setTextCursor(int x, int y);
-	int getTextLines();
-	int getTextColumns();
+	uint32_t getTextLines();
+	uint32_t getTextColumns();
 
 	void clearScreen(uint16_t color);
 	void setPixel(int x, int y, uint16_t color);
@@ -77,9 +77,8 @@ protected:
 
 	int cursor_x;
 	int cursor_y;
-	bool inverted;
-private:
 	Bus8080* bus;
+	bool inverted;
 };
 
 #endif

@@ -1,5 +1,5 @@
 
-#include "../ntios.h"
+#include "ntios.h"
 #include "../mmu.h"
 
 // None of this works yet.  Cannot test it yet either.  Just saving it here for now.

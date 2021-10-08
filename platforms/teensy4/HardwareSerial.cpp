@@ -106,6 +106,11 @@ int nvic_execution_priority(void)
 }
 
 
+const char* HardwareSerial::getName() {
+	return this->name;
+}
+
+
 void HardwareSerial::begin(uint32_t baud, uint16_t format)
 {
 	//printf("HardwareSerial begin\n");

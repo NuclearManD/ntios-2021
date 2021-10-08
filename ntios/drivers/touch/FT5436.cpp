@@ -1,6 +1,6 @@
 
-#include "../ctp_drivers.h"
-#include "../../ntios.h"
+#include "drivers/ctp_drivers.h"
+#include "ntios.h"
 
 #define FT5436_ADDRESS 0x38
 

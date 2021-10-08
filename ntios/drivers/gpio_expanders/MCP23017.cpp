@@ -1,5 +1,5 @@
 
-#include "MCP23017.h"
+#include "drivers/gpio_expanders/MCP23017.h"
 
 // registers
 #define MCP23017_IODIRA 0x00   // I/O direction register A

@@ -1,8 +1,8 @@
 
 #include "ra8875_registers.h"
-#include "ra8875.h"
+#include "drivers/graphics/ra8875.h"
+#include "ntios.h"
 
-#include <Arduino.h>
 RA8875::RA8875(SPIBusDevice* spi_bus, GPIODevice* gpio, int rst, int cs, timing_params_t* timing) {
 
 	width = timing->width;
@@ -173,7 +173,11 @@ void RA8875::fillRect(int x1, int y1, int x2, int y2, uint16_t color) {
 }
 
 void RA8875::drawBitmap16(int x, int y, int w, int h, uint16_t* data) {
-	
+	(void)x;
+	(void)y;
+	(void)w;
+	(void)h;
+	(void)data;
 }
 
 void RA8875::writeBytes(char* data, uint8_t len) {
@@ -228,7 +232,6 @@ bool RA8875::waitPoll(uint8_t regname, uint8_t waitflag) {
 */
 /**************************************************************************/
 void RA8875::writeReg(uint8_t reg, uint8_t val) {
-	Serial.flush();
 	writeCommand(reg);
 	writeData(val);
 }
@@ -252,7 +255,6 @@ uint8_t RA8875::readReg(uint8_t reg) {
 */
 /**************************************************************************/
 void RA8875::writeData(uint8_t d) {
-	Serial.printf("data <= %02x\n", d);
 	spi->lock();
 	gpio->writePin(cs, false);
 
@@ -290,7 +292,6 @@ uint8_t RA8875::readData(void) {
  */
 /**************************************************************************/
 void RA8875::writeCommand(uint8_t d) {
-	Serial.printf("cmd  <= %02x\n", d);
 	spi->lock();
 	gpio->writePin(cs, false);
 

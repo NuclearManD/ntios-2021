@@ -1,9 +1,9 @@
 
-#include "control_system.h"
-#include "pid.h"
-#include "../actuation.h"
-#include "../navigation.h"
-#include "../ntios.h"
+#include "actuator_control/control_system.h"
+#include "actuator_control/pid.h"
+#include "actuation.h"
+#include "navigation.h"
+#include "ntios.h"
 #include "../csvlog.h"
 #include <math.h>
 #include <stdio.h>
@@ -299,7 +299,7 @@ int b_make_controller(int argc, char** argv, StreamDevice* io) {
 	if (result != -1) {
 		// create control system
 		GenericSymmetricController* controller = new GenericSymmetricController(actuators, mixinfo, line);
-		add_virtual_device(controller);
+		add_device(controller);
 	}
 	return result;
 }

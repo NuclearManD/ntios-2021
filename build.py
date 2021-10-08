@@ -10,7 +10,7 @@ Ah yes, the project is run by someone from 42SV :)
 No I'm not going to remove it.  I've added -fpermissive too (that one I PARTICULARLY hate)
 '''
 
-BASE_CPP_FLAGS = "-Wall -Wextra -Werror -Wno-implicit-fallthrough -Wno-nonnull-compare -fmax-errors=5"
+BASE_CPP_FLAGS = "-Wall -Wextra -Werror -Wno-implicit-fallthrough -Wno-nonnull-compare -Wno-narrowing -Wno-comment -fmax-errors=5"
 BASE_CXX_FLAGS = "-std=gnu++14 -felide-constructors -fpermissive -fno-rtti"
 BASE_C_FLAGS = ""  # None for now
 BASE_LD_FLAGS = '-Lbuild/libs'
@@ -41,13 +41,20 @@ def compile_current_directory(build_dst: str, conf: dict, extra_flags: str = '')
     c_files = []
     cpp_files = []
     o_files = []
+    errors = 0
     for filename in os.listdir('.'):
         if filename.endswith('.c'):
             c_files.append(filename)
         if filename.endswith('.cpp'):
             cpp_files.append(filename)
+        if os.path.isdir(filename):
+            new_dst = os.path.join(build_dst, filename)
+            os.chdir(filename)
+            new_errs, new_o_files = compile_current_directory(new_dst, conf, extra_flags)
+            os.chdir('..')
+            o_files += new_o_files
+            errors += new_errs
 
-    errors = 0
     for i in c_files:
         o_file = build_dst + '/' + i[:-2] + '.o'
         o_files.append(o_file)
@@ -131,6 +138,7 @@ def build_platform(name: str):
     ntios_build_dir = os.path.abspath(f'build/ntios')
     arduino_build_dir = os.path.abspath(f'build/arduino')
     neon_libc_build_dir = os.path.abspath(f'build/neon-libc')
+    emuarch_build_dir = os.path.abspath(f'build/emuarch')
 
     print(f"\nCompiling platform {name}\n")
 
@@ -169,6 +177,16 @@ def build_platform(name: str):
     os.chdir('../neon-libc')
 
     new_errors, neon_o_files = compile_current_directory(neon_libc_build_dir, conf, '-fno-tree-loop-distribute-patterns')
+    errors += new_errors
+
+    if errors > 0:
+        print("Failure.  Fix errors.")
+        return -1
+
+    print("\nCompiling emuarch")
+    os.chdir('../emuarch')
+
+    new_errors, neon_o_files = compile_current_directory(emuarch_build_dir, conf, '-fno-tree-loop-distribute-patterns')
     errors += new_errors
 
     if errors > 0:

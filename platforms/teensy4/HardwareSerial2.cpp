@@ -66,7 +66,7 @@ static HardwareSerial::hardware_t UART4_Hardware = {
 	XBARA1_OUT_LPUART4_TRG_INPUT
 };
 HardwareSerial Serial2(&IMXRT_LPUART4, &UART4_Hardware, tx_buffer2, SERIAL2_TX_BUFFER_SIZE, 
-	rx_buffer2,  SERIAL2_RX_BUFFER_SIZE);
+	rx_buffer2,  SERIAL2_RX_BUFFER_SIZE, "Serial2");
 #else  // Teensy Micromod
 static HardwareSerial::hardware_t UART3_Hardware = {
     3, IRQ_LPUART3, &IRQHandler_Serial2, 
@@ -80,5 +80,5 @@ static HardwareSerial::hardware_t UART3_Hardware = {
     XBARA1_OUT_LPUART3_TRG_INPUT
 };
 HardwareSerial Serial2(&IMXRT_LPUART3, &UART3_Hardware, tx_buffer2, SERIAL2_TX_BUFFER_SIZE,
-    rx_buffer2,  SERIAL2_RX_BUFFER_SIZE);
+    rx_buffer2,  SERIAL2_RX_BUFFER_SIZE, "Serial2");
 #endif

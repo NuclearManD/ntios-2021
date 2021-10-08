@@ -1,5 +1,5 @@
 
-#include "audio_codec.h"
+#include "fileapi/audio_codec.h"
 
 /*
 class AudioDecoderMP3 {
@@ -69,10 +69,10 @@ AudioDecoderNAF::AudioDecoderNAF(NTIOSFile* file) {
 	if (memcmp(buffer, " NAF", 4))
 		return;
 
-	if (((buffer[4] << 8) || buffer[5]) > NAF_VERSION)
+	if (((buffer[4] << 8) | buffer[5]) > NAF_VERSION)
 		return;
 
-	sample_rate = ((buffer[6] << 8) || buffer[7]);
+	sample_rate = ((buffer[6] << 8) | buffer[7]);
 	n_channels = buffer[8];
 	compression = buffer[9];
 	this->file = file;
@@ -144,6 +144,13 @@ uint16_t AudioDecoderNAF::decode(uint16_t* pcm_data, uint16_t max_samples) {
 
 		return num_samples;
 	}
+
+	return 0;
+}
+
+AudioDecoderNAF::~AudioDecoderNAF() {
+	// The file is given to us, so it is not our
+	// responsibility to free it.
 }
 
 AudioDecoder* decodeAudio(NTIOSFile* file) {

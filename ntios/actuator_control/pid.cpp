@@ -1,5 +1,8 @@
-#include <Arduino.h>
-#include "pid.h"
+
+#include <math.h>
+#include "ntios.h"
+#include "actuator_control/pid.h"
+
 
 PIDControl::PIDControl(double p, double i, double d){
   p_gain = p;

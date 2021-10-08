@@ -65,5 +65,5 @@ static HardwareSerial::hardware_t UART5_Hardware = {
 	XBARA1_OUT_LPUART5_TRG_INPUT
 };
 HardwareSerial Serial8(&IMXRT_LPUART5, &UART5_Hardware, tx_buffer8, SERIAL8_TX_BUFFER_SIZE,
-	rx_buffer8,  SERIAL8_RX_BUFFER_SIZE);
+	rx_buffer8,  SERIAL8_RX_BUFFER_SIZE, "Serial8");
 #endif
