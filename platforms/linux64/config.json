@@ -1,0 +1,20 @@
+{
+	"mcu": "Unknown",
+	"mcu_ld": "",
+
+	"cc": "gcc",
+	"ld": "g++",
+	"cxx": "g++",
+	"objcopy": "objcopy",
+	"objdump": "objdump",
+	"size": "",
+	"ar": "ar",
+
+	"cpu_flags": "",
+	"cpp_flags": "-O3 -I. -Iincludes -fno-builtin-printf -DLONG_IS_64_BITS -DHAS_RANDOM",
+	"cxx_flags": "-fno-exceptions -Wno-error=narrowing",
+	"c_flags": "",
+	"ld_flags": "-lm -lstdc++ -Os -Wl,--gc-sections,--relax",
+
+	"executable_type": "LINUX64"
+}

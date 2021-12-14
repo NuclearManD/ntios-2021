@@ -247,8 +247,10 @@ char* get_heap_top() {
 	return nullptr;
 	#elif defined(CORE_TEENSY) || (ARDUINO > 103 && ARDUINO != 151)
 	return __brkval;
-	#else  // __arm__
+	#elif defined(__arm__)
 	return __brkval ? __brkval : __malloc_heap_start;
+	#else
+	return nullptr;
 	#endif  // __arm__
 }
 

@@ -109,6 +109,7 @@ def compile_current_directory(build_dst: str, conf: dict, extra_flags: str = '')
 
     return errors, o_files
 
+
 def build_platform(name: str):
     path = os.path.join('platforms', name)
     if not os.path.isdir(path):
@@ -120,8 +121,11 @@ def build_platform(name: str):
     os.makedirs('build/libs', exist_ok=True)
 
     cpu_flags = conf['cpu_flags']
-    mcu_ld = f'platforms/{name}/' + conf["mcu_ld"]
-    ld_flags  = f'{conf["ld_flags"]} {cpu_flags} -T{mcu_ld} {BASE_LD_FLAGS}'
+    if conf["mcu_ld"] != '':
+        mcu_ld = f'platforms/{name}/' + conf["mcu_ld"]
+        ld_flags  = f'{conf["ld_flags"]} {cpu_flags} -T{mcu_ld} {BASE_LD_FLAGS}'
+    else:
+        ld_flags  = f'{conf["ld_flags"]} {cpu_flags} {BASE_LD_FLAGS}'
 
     ld = conf['ld']
     objcopy = conf['objcopy']
@@ -135,10 +139,10 @@ def build_platform(name: str):
     o_files = []
 
     platform_build_dir = os.path.abspath(f'build/{name}')
-    ntios_build_dir = os.path.abspath(f'build/ntios')
-    arduino_build_dir = os.path.abspath(f'build/arduino')
-    neon_libc_build_dir = os.path.abspath(f'build/neon-libc')
-    emuarch_build_dir = os.path.abspath(f'build/emuarch')
+    ntios_build_dir = os.path.abspath(f'build/{target}/ntios')
+    arduino_build_dir = os.path.abspath(f'build/{target}/arduino')
+    neon_libc_build_dir = os.path.abspath(f'build/{target}/neon-libc')
+    emuarch_build_dir = os.path.abspath(f'build/{target}/emuarch')
 
     print(f"\nCompiling platform {name}\n")
 
@@ -271,4 +275,5 @@ endif
 clean:
     rm -f *.o *.d $(TARGET).elf $(TARGET).hex
 '''
-build_platform('teensy4')
+
+build_platform(sys.argv[1])
