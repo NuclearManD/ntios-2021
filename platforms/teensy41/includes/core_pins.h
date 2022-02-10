@@ -48,7 +48,7 @@
 #define RISING			3
 
 
-#if defined(__IMXRT1062__) && defined(ARDUINO_TEENSY40)
+#if defined(__IMXRT1062__) && defined(TEENSY40)
 
 #define CORE_NUM_TOTAL_PINS	40
 #define CORE_NUM_DIGITAL	40
@@ -1206,7 +1206,7 @@
 #define CORE_INT_EVERY_PIN	1
 
 
-#elif defined(__IMXRT1062__) && defined(ARDUINO_TEENSY_MICROMOD)
+#elif defined(__IMXRT1062__) && defined(TEENSY_MICROMOD)
 
 #define CORE_NUM_TOTAL_PINS	46
 #define CORE_NUM_DIGITAL	46
@@ -1769,7 +1769,9 @@
 
 
 
+#else
 
+#error "core_pins.h is broken!  Couldn't get pin configuration."
 
 
 #endif // __IMXRT1062__

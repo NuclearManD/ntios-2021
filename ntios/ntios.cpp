@@ -40,8 +40,7 @@ uint64_t get_last_update_time() {
 // initialize driver list so OS can run - will set up 
 void ntios_init(Device** devices, int num_devices, StreamDevice* debug) {
 
-	_ntios_devices = (Device**)malloc(num_devices);
-	memcpy(_ntios_devices, devices, sizeof(Device*)*num_devices);
+	_ntios_devices = devices;
 	_ntios_device_count = num_devices;
 
 	_ntios_debug_port = debug;

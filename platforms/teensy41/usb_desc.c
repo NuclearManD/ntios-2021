@@ -117,7 +117,7 @@ static uint8_t device_descriptor[] = {
   // identify which Teensy model is used.
   #if defined(__IMXRT1062__) && defined(ARDUINO_TEENSY40)
         0x79, 0x02, // Teensy 4.0
-  #elif defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41)
+  #elif defined(__IMXRT1062__) && defined(TEENSY41)
         0x80, 0x02, // Teensy 4.1
   #elif defined(__IMXRT1062__) && defined(ARDUINO_TEENSY_MICROMOD)
         0x81, 0x02, // Teensy MicroMod

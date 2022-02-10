@@ -43,7 +43,7 @@ uint32_t set_arm_clock(uint32_t frequency); // clockspeed.c
 extern void __libc_init_array(void); // C++ standard library
 
 uint8_t external_psram_size = 0;
-#ifdef ARDUINO_TEENSY41
+#ifdef TEENSY41
 struct smalloc_pool extmem_smalloc_pool;
 #endif
 
@@ -144,7 +144,7 @@ void ResetHandler(void)
 	}
 	SNVS_HPCR |= SNVS_HPCR_RTC_EN | SNVS_HPCR_HP_TS;
 
-#ifdef ARDUINO_TEENSY41
+#ifdef TEENSY41
 	configure_external_ram();
 #endif
 	startup_early_hook();
@@ -290,7 +290,7 @@ FLASHMEM void configure_cache(void)
 	SCB_CCR |= (SCB_CCR_IC | SCB_CCR_DC);
 }
 
-#ifdef ARDUINO_TEENSY41
+#ifdef TEENSY41
 
 #define LUT0(opcode, pads, operand) (FLEXSPI_LUT_INSTRUCTION((opcode), (pads), (operand)))
 #define LUT1(opcode, pads, operand) (FLEXSPI_LUT_INSTRUCTION((opcode), (pads), (operand)) << 16)
@@ -458,7 +458,7 @@ FLASHMEM void configure_external_ram()
 	}
 }
 
-#endif // ARDUINO_TEENSY41
+#endif // TEENSY41
 
 
 FLASHMEM void usb_pll_start()

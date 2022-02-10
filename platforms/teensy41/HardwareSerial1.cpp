@@ -56,7 +56,7 @@ const HardwareSerial::hardware_t UART6_Hardware = {
 	0, IRQ_LPUART6, &IRQHandler_Serial1, 
 	&serialEvent1, &_serialEvent1_default,
 	CCM_CCGR3, CCM_CCGR3_LPUART6(CCM_CCGR_ON),
-	#if defined(ARDUINO_TEENSY41)
+	#if defined(TEENSY41)
 	{{0,2, &IOMUXC_LPUART6_RX_SELECT_INPUT, 1}, {52, 2, &IOMUXC_LPUART6_RX_SELECT_INPUT, 0}},
 	{{1,2, &IOMUXC_LPUART6_TX_SELECT_INPUT, 1}, {53, 2, &IOMUXC_LPUART6_TX_SELECT_INPUT, 0}},
 	#else

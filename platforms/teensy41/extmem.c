@@ -5,7 +5,7 @@
 #include "smalloc.h"
 #include "wiring.h"
 
-#if defined(ARDUINO_TEENSY41)
+#if defined(TEENSY41)
 // Teensy 4.1 external RAM address range is 0x70000000 to 0x7FFFFFFF
 #define HAS_EXTRAM
 #define IS_EXTMEM(addr) (((uint32_t)ptr >> 28) == 7)

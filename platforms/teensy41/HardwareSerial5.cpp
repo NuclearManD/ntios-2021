@@ -54,7 +54,7 @@ static HardwareSerial::hardware_t UART8_Hardware = {
 	4, IRQ_LPUART8, &IRQHandler_Serial5, 
 	&serialEvent5, &_serialEvent5_default,
 	CCM_CCGR6, CCM_CCGR6_LPUART8(CCM_CCGR_ON),
-	#if defined(ARDUINO_TEENSY41)
+	#if defined(TEENSY41)
 	{{21,2, &IOMUXC_LPUART8_RX_SELECT_INPUT, 1}, {46, 2, &IOMUXC_LPUART8_RX_SELECT_INPUT, 0}},
 	{{20,2, &IOMUXC_LPUART8_TX_SELECT_INPUT, 1}, {47, 2, &IOMUXC_LPUART8_TX_SELECT_INPUT, 0}},
 	43, //  CTS pin

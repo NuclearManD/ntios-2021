@@ -86,7 +86,7 @@ public:
 
 class StreamDevice: public Device, public Stream {
 public:
-	int getType();
+	virtual int getType();
 };
 
 class NTIOSFile: public Stream {

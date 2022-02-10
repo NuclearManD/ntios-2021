@@ -130,7 +130,7 @@ extern "C" {
 	extern void IRQHandler_Serial5();
 	extern void IRQHandler_Serial6();
 	extern void IRQHandler_Serial7();
-	#if defined(ARDUINO_TEENSY41)   
+	#if defined(TEENSY41)
 	extern void IRQHandler_Serial8();
 	#endif
 }
@@ -152,7 +152,7 @@ extern const pin_to_xbar_info_t pin_to_xbar_info[];
 extern const uint8_t count_pin_to_xbar_info;
 
 
-class HardwareSerial : public StreamDevice
+class HardwareSerial : public SerialDevice
 {
 public:
 	static const uint8_t cnt_tx_pins = 2;
@@ -191,6 +191,7 @@ public:
 	}
 	void begin(uint32_t baud, uint16_t format=0);
 	void end(void);
+	virtual void setBaud(uint32_t baud);
 
 	virtual int available(void);
 	virtual int peek(void);
@@ -282,7 +283,7 @@ private:
 	friend void IRQHandler_Serial5();
 	friend void IRQHandler_Serial6();
 	friend void IRQHandler_Serial7();
-	#if defined(ARDUINO_TEENSY41)   
+	#if defined(TEENSY41)
 	friend void IRQHandler_Serial8();
 	static HardwareSerial 	*s_serials_with_serial_events[8];
 	#else	
@@ -312,7 +313,7 @@ extern void serialEvent5(void);
 extern void serialEvent6(void);
 extern void serialEvent7(void);
 
-	#if defined(ARDUINO_TEENSY41)   
+	#if defined(TEENSY41)
 extern HardwareSerial Serial8;
 extern void serialEvent8(void);
 #endif

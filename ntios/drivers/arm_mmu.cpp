@@ -100,7 +100,7 @@ void ntios_setup_mmu() {
 	mmu_section(0x20000000,0x20000000,0x0000); //NOT CACHED!
 	mmu_section(0x20200000,0x20200000,0x0000); //NOT CACHED!
 	
-	Serial.printf("mmu: %08x\n", _arm_get_mmu_capabilities());
+	//Serial.printf("mmu: %08x\n", _arm_get_mmu_capabilities());
 }
 
 #endif

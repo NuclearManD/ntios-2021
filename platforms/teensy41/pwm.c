@@ -59,7 +59,7 @@ const struct pwm_pin_info_struct pwm_pin_info[] = {
 	{1, M(1, 2), 2, 1},  // FlexPWM1_2_B  38  // SD_B0_05
 	{1, M(1, 2), 1, 1},  // FlexPWM1_2_A  39  // SD_B0_04
 #endif
-#ifdef ARDUINO_TEENSY41
+#ifdef TEENSY41
 	{0, M(1, 0), 0, 0},
 	{0, M(1, 0), 0, 0},
 	{1, M(2, 3), 1, 6},  // FlexPWM2_3_A  36  // B1_00

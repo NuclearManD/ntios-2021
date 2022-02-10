@@ -42,12 +42,12 @@ extern "C" int main(void)
 {
 	delay(2000);
 	_get_devices_retval_t devinfo = _platform_get_devices();
-
-	//StreamDevice& ser = *(devinfo.primary_stream);
+	for(int i = 0; i < devinfo.num_devices; i++) {
+		devinfo.primary_stream->printf("%i %p\n", i, devinfo.device_list[i]);
+	}
 
 	delay(500);
 	ntios_init(devinfo.device_list, devinfo.num_devices, devinfo.primary_stream);
-	//create_new_shell(ser);
 	ntios_shell(devinfo.primary_stream);
 }
 

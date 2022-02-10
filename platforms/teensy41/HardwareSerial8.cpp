@@ -31,7 +31,7 @@
 #include <Arduino.h>
 #include "avr/pgmspace.h"
 #include "HardwareSerial.h"
-#if defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41)
+#if defined(__IMXRT1062__) && defined(TEENSY41)
 
 #ifndef SERIAL8_TX_BUFFER_SIZE
 #define SERIAL8_TX_BUFFER_SIZE     40 // number of outgoing bytes to buffer

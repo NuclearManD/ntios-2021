@@ -25,6 +25,8 @@
 #define elapsedMillis_h
 #ifdef __cplusplus
 
+#include "../includes/core_pins.h"
+
 #if ARDUINO >= 100
 #include "Arduino.h"
 #else

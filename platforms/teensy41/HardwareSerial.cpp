@@ -67,7 +67,7 @@ extern "C" {
     extern void xbar_connect(unsigned int input, unsigned int output);
 }
 
-#if defined(ARDUINO_TEENSY41)   
+#if defined(TEENSY41)
 HardwareSerial 	*HardwareSerial::s_serials_with_serial_events[8];
 #else
 HardwareSerial 	*HardwareSerial::s_serials_with_serial_events[7];
@@ -181,9 +181,9 @@ void HardwareSerial::begin(uint32_t baud, uint16_t format)
 	uint16_t rx_fifo_size = (((port->FIFO >> 0) & 0x7) << 2);
 	uint8_t rx_water = (rx_fifo_size < 16) ? rx_fifo_size >> 1 : 7;
 	/*
-	Serial.printf("SerialX::begin stat:%x ctrl:%x fifo:%x water:%x\n", port->STAT, port->CTRL, port->FIFO, port->WATER );
-	Serial.printf("  FIFO sizes: tx:%d rx:%d\n",tx_fifo_size, rx_fifo_size);	
-	Serial.printf("  Watermark tx:%d, rx: %d\n", tx_water, rx_water);
+	//Serial.printf("SerialX::begin stat:%x ctrl:%x fifo:%x water:%x\n", port->STAT, port->CTRL, port->FIFO, port->WATER );
+	//Serial.printf("  FIFO sizes: tx:%d rx:%d\n",tx_fifo_size, rx_fifo_size);
+	//Serial.printf("  Watermark tx:%d, rx: %d\n", tx_water, rx_water);
 	*/
 	port->WATER = LPUART_WATER_RXWATER(rx_water) | LPUART_WATER_TXWATER(tx_water);
 	port->FIFO |= LPUART_FIFO_TXFE | LPUART_FIFO_RXFE;
@@ -251,6 +251,11 @@ void HardwareSerial::end(void)
 	rx_buffer_tail_ = 0;
 	if (rts_pin_baseReg_) rts_deassert();
 	// 
+}
+
+void HardwareSerial::setBaud(uint32_t baud) {
+	end();
+	begin(baud);
 }
 
 void HardwareSerial::transmitterEnable(uint8_t pin)
@@ -705,7 +710,7 @@ const pin_to_xbar_info_t PROGMEM pin_to_xbar_info[] = {
 	{32, 10, 1, nullptr, 0},
 	{33,  9, 3, &IOMUXC_XBAR1_IN09_SELECT_INPUT, 0x0},
 
-#ifdef ARDUINO_TEENSY41
+#ifdef TEENSY41
 	{36, 16, 1, nullptr, 0},
 	{37, 17, 1, &IOMUXC_XBAR1_IN17_SELECT_INPUT, 0x3},
 	{42,  7, 3, &IOMUXC_XBAR1_IN07_SELECT_INPUT, 0x1},

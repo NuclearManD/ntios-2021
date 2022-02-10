@@ -37,7 +37,7 @@ const uint8_t pin_to_channel[] = { // pg 482
 	2,	// 25/A11 AD_B0_13
 	128+3,	// 26/A12 AD_B1_14 - only on ADC2, 3
 	128+4,	// 27/A13 AD_B1_15 - only on ADC2, 4
-#ifdef ARDUINO_TEENSY41
+#ifdef TEENSY41
 	255,	// 28
 	255,	// 29
 	255,	// 30

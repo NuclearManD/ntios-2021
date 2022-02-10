@@ -10,7 +10,7 @@ Ah yes, the project is run by someone from 42SV :)
 No I'm not going to remove it.  I've added -fpermissive too (that one I PARTICULARLY hate)
 '''
 
-BASE_CPP_FLAGS = "-Wall -Wextra -Werror -Wno-implicit-fallthrough -Wno-nonnull-compare -Wno-narrowing -Wno-comment -fmax-errors=5"
+BASE_CPP_FLAGS = "-Wall -Wextra -Werror -Wno-implicit-fallthrough -Wno-nonnull-compare -Wno-narrowing -Wno-comment -Wno-unused-parameter -fmax-errors=5"
 BASE_CXX_FLAGS = "-std=gnu++14 -felide-constructors -fpermissive -fno-rtti"
 BASE_C_FLAGS = ""  # None for now
 BASE_LD_FLAGS = '-Lbuild/libs'
@@ -21,6 +21,7 @@ ntios_include_dir = os.path.abspath('ntios_include')
 arduino_include_dir = os.path.abspath('arduino_libcpp/includes')
 neon_include_dir = os.path.abspath('neon-libc/include')
 include_flags = f' -I{ntios_include_dir} -I{arduino_include_dir} -I{neon_include_dir}'
+
 
 def compile_current_directory(build_dst: str, conf: dict, extra_flags: str = '') -> (int, list):
     os.makedirs(build_dst, exist_ok=True)

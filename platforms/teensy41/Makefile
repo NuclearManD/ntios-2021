@@ -35,7 +35,7 @@
 # Use these lines for Teensy 4.1
 MCU = IMXRT1062
 MCU_LD = imxrt1062_t41.ld
-MCU_DEF = ARDUINO_TEENSY41
+MCU_DEF = TEENSY41
 COMPILERPATH=/home/nuclaer/gcc-arm-none-eabi-7-2017-q4-major/bin
 
 # The name of your project (used to name the compiled .hex file)

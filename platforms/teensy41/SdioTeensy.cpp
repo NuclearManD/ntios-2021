@@ -335,11 +335,11 @@ static void gpioMux(uint8_t mode) {
 // add speed strength args?
 static void enableGPIO(bool enable) {
   const uint32_t CLOCK_MASK = IOMUXC_SW_PAD_CTL_PAD_PKE |
-#if defined(ARDUINO_TEENSY41)
+#if defined(TEENSY41)
                               IOMUXC_SW_PAD_CTL_PAD_DSE(7) |
-#else  // defined(ARDUINO_TEENSY41)
+#else  // defined(TEENSY41)
                               IOMUXC_SW_PAD_CTL_PAD_DSE(4) |  ///// WHG
-#endif  // defined(ARDUINO_TEENSY41)
+#endif  // defined(TEENSY41)
                               IOMUXC_SW_PAD_CTL_PAD_SPEED(2);
 
   const uint32_t DATA_MASK = CLOCK_MASK | IOMUXC_SW_PAD_CTL_PAD_PUE |

@@ -80,7 +80,7 @@ public:
 	}
 #ifdef FILE_WHOAMI
 	virtual void whoami() { // testing only
-		Serial.printf("  File    this=%x, f=%x\n", (int)this, (int)f);
+		//Serial.printf("  File    this=%x, f=%x\n", (int)this, (int)f);
 		if (f) f->whoami();
 	}
 	unsigned int getRefcount() { // testing only
