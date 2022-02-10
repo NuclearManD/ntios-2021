@@ -1,4 +1,4 @@
-// uncommenting the line below will enable the debug printf statements in cores\teensy4
+// uncommenting the line below will enable the debug printf statements in cores\teensy41
 // by default it will print to the Serial4 TX pin at baud rate of 115200
 //#define PRINT_DEBUG_STUFF
 

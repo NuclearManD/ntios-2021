@@ -20,9 +20,9 @@
 	#define MAX_BURST_SPEED 0
 	#define MAX_BURST_MILLIS 0
 #else
-	#define MAX_CLOCK_SPEED 0
-	#define MIN_CLOCK_SPEED 0
-	#define MAX_BURST_SPEED 0
+	#define MAX_CLOCK_SPEED 1
+	#define MIN_CLOCK_SPEED 1
+	#define MAX_BURST_SPEED 1
 	#define MAX_BURST_MILLIS 0
 #endif
 

@@ -1,3 +1,4 @@
 build/
 .kdev4/
 __pycache__/
+cmake-build-debug/

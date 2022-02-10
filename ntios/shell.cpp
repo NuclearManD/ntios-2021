@@ -767,5 +767,9 @@ int ntios_system(int argc, char** argv, StreamDevice* io) {
 		}else
 			io->println("Error: file not found");
 	}
+	if (result == -100)
+		result = __ntios_device_cli_utils(argc, (const char**)argv, io);
+	if (result == -100)
+		io->printf("Not a command: %s\n", argv[0]);
 	return result;
 }

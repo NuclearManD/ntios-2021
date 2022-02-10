@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="551095fa-980f-46bb-8c41-16ec3d387b59" name="teensy41" defaultType="TOOL">
+      <configuration id="176e6d89-b523-43e7-8eb0-4b9f8050f276" name="teensy41">
+        <build type="TOOL">
+          <tool actionId="Tool_External Tools_teensy41" />
+        </build>
+      </configuration>
+    </target>
+    <target id="5cf13bb8-9802-447a-9747-99f06f9da7de" name="linux64" defaultType="TOOL">
+      <configuration id="cc37cf53-1aa9-4c0f-a016-d98db1740db5" name="linux64">
+        <build type="TOOL">
+          <tool actionId="Tool_External Tools_linux64" />
+        </build>
+      </configuration>
+    </target>
+  </component>
+</project>

@@ -51,6 +51,8 @@ const char* devTypeToStr(int type) {
 			return "Capacitive Touch Panel";
 		case DEV_TYPE_TOUCH_PANEL:
 			return "Touch Panel";
+		case DEV_TYPE_SD_CARD:
+			return "SD Card";
 		default:
 			return "Unknown Device";
 	}

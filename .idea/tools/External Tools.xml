@@ -1,0 +1,16 @@
+<toolSet name="External Tools">
+  <tool name="teensy41" description="Builds the teensy41 version" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="python3" />
+      <option name="PARAMETERS" value="build.py teensy41" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/gitrepos/ntios-2021" />
+    </exec>
+  </tool>
+  <tool name="linux64" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="python3" />
+      <option name="PARAMETERS" value="build.py linux64" />
+      <option name="WORKING_DIRECTORY" value="$ProjectFileDir$" />
+    </exec>
+  </tool>
+</toolSet>

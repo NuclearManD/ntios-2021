@@ -40,6 +40,7 @@ extern "C" void digitalWrite(int pin, bool val);
 
 extern "C" int main(void)
 {
+	delay(2000);
 	_get_devices_retval_t devinfo = _platform_get_devices();
 
 	//StreamDevice& ser = *(devinfo.primary_stream);
