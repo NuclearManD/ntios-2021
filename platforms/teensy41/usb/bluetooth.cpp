@@ -37,13 +37,13 @@
 #undef DEBUG_BT_VERBOSE
 void inline DBGPrintf(...) {};
 #else
-#define DBGPrintf USBHDBGSerial.printf
+#define DBGPrintf //USBHDBGSerial.printf
 #endif
 
 #ifndef DEBUG_BT_VERBOSE
 void inline VDBGPrintf(...) {};
 #else
-#define VDBGPrintf USBHDBGSerial.printf
+#define VDBGPrintf //USBHDBGSerial.printf
 #endif
 
 
@@ -753,7 +753,7 @@ void BluetoothController::handle_hci_extended_inquiry_result()
 		rxbuf_[index_bd],rxbuf_[index_bd+1],rxbuf_[index_bd+2],rxbuf_[index_bd+3],rxbuf_[index_bd+4],rxbuf_[index_bd+5],
 		rxbuf_[index_ps], bluetooth_class);
 	// Lets see if we can find a name
-	while (index_eir_data < 256) {
+	while (true) {
 		if (rxbuf_[index_eir_data] == 0) break; // no more data
 		switch (rxbuf_[index_eir_data+1]) {
 			case 0x08: // Shortened local name
@@ -839,7 +839,7 @@ void BluetoothController::handle_hci_connection_complete() {
 	    memset(packet, 0, sizeof(packet));
 	    packet[0] = 0x43; 
 	    packet[1] = 0x02;      // Report ID
-	    USBHDBGSerial.printf("SixAxis Command Issued!\r\n");
+	    //USBHDBGSerial.printf("SixAxis Command Issued!\r\n");
      	sendL2CapCommand(packet, sizeof(packet), 0x40);	
 #endif     	
 	}

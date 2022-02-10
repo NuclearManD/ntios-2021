@@ -42,7 +42,7 @@
 
 #if ENABLE_SERIALPRINTF
 #undef printf
-#define printf(...) Serial.printf(__VA_ARGS__); Serial.write("\r\n")
+#define printf(...) //Serial.printf(__VA_ARGS__); Serial.write("\r\n")
 #else
 #undef printf
 #define printf(...)    

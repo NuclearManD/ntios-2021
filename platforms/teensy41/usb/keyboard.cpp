@@ -23,7 +23,7 @@
 
 #include <Arduino.h>
 #include "USBHost_t36.h"  // Read this header first for key info
-#include "keylayouts.h"   // from Teensyduino core library
+#include "../includes/keylayouts.h"   // from Teensyduino core library
 
 typedef struct {
 	KEYCODE_TYPE code;
@@ -114,6 +114,26 @@ void KeyboardController::init()
 	USBHIDParser::driver_ready_for_hid_collection(this);
 	BluetoothController::driver_ready_for_bluetooth(this);
 	force_boot_protocol = false;	// start off assuming not
+}
+
+int KeyboardController::available() {
+	return keyboard_buffer_size - keyboard_buffer_idx;
+}
+
+int KeyboardController::peek() {
+	return keyboard_buffer[keyboard_buffer_idx];
+}
+
+const char* KeyboardController::getName() {
+	return "USB Keyboard";
+}
+
+int KeyboardController::read() {
+	if (keyboard_buffer_idx == keyboard_buffer_size)
+		return 0;
+	int val = keyboard_buffer[keyboard_buffer_idx];
+	keyboard_buffer_idx = (keyboard_buffer_idx + 1) % KBD_BUFFER_SZ;
+	return val;
 }
 
 bool KeyboardController::claim(Device_t *dev, int type, const uint8_t *descriptors, uint32_t len)

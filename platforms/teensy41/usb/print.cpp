@@ -45,7 +45,7 @@ void USBHost::print_(const Transfer_t *transfer)
 	//USBHDBGSerial.print("   bufs:  ");
 	for (int i=0; i < 5; i++) {
 		//USBHDBGSerial.print(transfer->qtd.buffer[i], HEX);
-		if (i < 4) USBHDBGSerial.print(',');
+		if (i < 4) //USBHDBGSerial.print(',');
 	}
 	//USBHDBGSerial.println();
 }
@@ -95,10 +95,10 @@ void USBHost::print_(const Pipe_t *pipe)
 {
 	if (!((uint32_t)pipe & 0xFFFFFFE0)) return;
 	//USBHDBGSerial.print("Pipe ");
-	if (pipe->type == 0) USBHDBGSerial.print("control");
-	else if (pipe->type == 1) USBHDBGSerial.print("isochronous");
-	else if (pipe->type == 2) USBHDBGSerial.print("bulk");
-	else if (pipe->type == 3) USBHDBGSerial.print("interrupt");
+	if (pipe->type == 0) //USBHDBGSerial.print("control");
+	else if (pipe->type == 1) //USBHDBGSerial.print("isochronous");
+	else if (pipe->type == 2) //USBHDBGSerial.print("bulk");
+	else if (pipe->type == 3) //USBHDBGSerial.print("interrupt");
 	//USBHDBGSerial.print(pipe->direction ? " IN" : " OUT");
 	//USBHDBGSerial.print("  @ ");
 	//USBHDBGSerial.println((uint32_t)pipe, HEX);
@@ -120,7 +120,7 @@ void USBHost::print_(const Pipe_t *pipe)
 	//USBHDBGSerial.print("    bufs:  ");
 	for (int i=0; i < 5; i++) {
 		//USBHDBGSerial.print(pipe->qh.buffer[i], HEX);
-		if (i < 4) USBHDBGSerial.print(',');
+		if (i < 4) //USBHDBGSerial.print(',');
 	}
 	//USBHDBGSerial.println();
 	const Transfer_t *t = (Transfer_t *)pipe->qh.next;
@@ -143,7 +143,7 @@ void USBHost::print_driverlist(const char *name, const USBDriver *driver)
 	uint32_t count=0;
 	for (const USBDriver *p = driver; p; p = p->next) {
 		//USBHDBGSerial.print((uint32_t)p, HEX);
-		if (p->next) USBHDBGSerial.print(" -> ");
+		if (p->next) //USBHDBGSerial.print(" -> ");
 		if (++count > 30) {
 			//USBHDBGSerial.println("abort:list too long");
 			return;
@@ -175,21 +175,21 @@ void USBHost::print_qh_list(const Pipe_t *list)
 static void print_class_subclass_protocol(uint8_t c, uint8_t s, uint8_t p)
 {
 	//USBHDBGSerial.print(c);
-	if (c == 3) USBHDBGSerial.print("(HID)");
-	if (c == 8) USBHDBGSerial.print("(Mass Storage)");
-	if (c == 9) USBHDBGSerial.print("(Hub)");
+	if (c == 3) //USBHDBGSerial.print("(HID)");
+	if (c == 8) //USBHDBGSerial.print("(Mass Storage)");
+	if (c == 9) //USBHDBGSerial.print("(Hub)");
 	//USBHDBGSerial.print(" / ");
 	//USBHDBGSerial.print(s);
-	if (c == 3 && s == 1) USBHDBGSerial.print("(Boot)");
-	if (c == 8 && s == 6) USBHDBGSerial.print("(SCSI)");
+	if (c == 3 && s == 1) //USBHDBGSerial.print("(Boot)");
+	if (c == 8 && s == 6) //USBHDBGSerial.print("(SCSI)");
 	//USBHDBGSerial.print(" / ");
 	//USBHDBGSerial.print(p);
-	if (c == 3 && s == 1 && p == 1) USBHDBGSerial.print("(Keyboard)");
-	if (c == 3 && s == 1 && p == 2) USBHDBGSerial.print("(Mouse)");
-	if (c == 8 && s == 6 && p == 0x50) USBHDBGSerial.print("(Bulk Only)");
-	if (c == 8 && s == 6 && p == 0x62) USBHDBGSerial.print("(UAS)");
-	if (c == 9 && s == 0 && p == 1) USBHDBGSerial.print("(Single-TT)");
-	if (c == 9 && s == 0 && p == 2) USBHDBGSerial.print("(Multi-TT)");
+	if (c == 3 && s == 1 && p == 1) //USBHDBGSerial.print("(Keyboard)");
+	if (c == 3 && s == 1 && p == 2) //USBHDBGSerial.print("(Mouse)");
+	if (c == 8 && s == 6 && p == 0x50) //USBHDBGSerial.print("(Bulk Only)");
+	if (c == 8 && s == 6 && p == 0x62) //USBHDBGSerial.print("(UAS)");
+	if (c == 9 && s == 0 && p == 1) //USBHDBGSerial.print("(Single-TT)");
+	if (c == 9 && s == 0 && p == 2) //USBHDBGSerial.print("(Multi-TT)");
 	//USBHDBGSerial.println();
 }
 
@@ -261,10 +261,10 @@ void USBHost::print_config_descriptor(const uint8_t *p, uint32_t maxlen)
 			//USBHDBGSerial.println((p[2] & 128) ? " IN" : " OUT");
 			//USBHDBGSerial.print("    Type = ");
 			switch (p[3] & 3) {
-				case 0: USBHDBGSerial.println("Control"); break;
-				case 1: USBHDBGSerial.println("Isochronous"); break;
-				case 2: USBHDBGSerial.println("Bulk"); break;
-				case 3: USBHDBGSerial.println("Interrupt"); break;
+				case 0: //USBHDBGSerial.println("Control"); break;
+				case 1: //USBHDBGSerial.println("Isochronous"); break;
+				case 2: //USBHDBGSerial.println("Bulk"); break;
+				case 3: //USBHDBGSerial.println("Interrupt"); break;
 			}
 			//USBHDBGSerial.print("    Max Size = ");
 			//USBHDBGSerial.println(p[4] | (p[5] << 8));
@@ -281,7 +281,7 @@ void USBHost::print_config_descriptor(const uint8_t *p, uint32_t maxlen)
 			//USBHDBGSerial.print("    HID, ");
 			//USBHDBGSerial.print(p[5]);
 			//USBHDBGSerial.print(" report descriptor");
-			if (p[5] != 1) USBHDBGSerial.print('s');
+			if (p[5] != 1) //USBHDBGSerial.print('s');
 			//USBHDBGSerial.println();
 		}
 		len -= p[0];
@@ -321,7 +321,7 @@ void USBHost::print_hexbytes(const void *ptr, uint32_t len)
 	if (ptr == NULL || len == 0) return;
 	const uint8_t *p = (const uint8_t *)ptr;
 	do {
-		if (*p < 16) USBHDBGSerial.print('0');
+		if (*p < 16) //USBHDBGSerial.print('0');
 		//USBHDBGSerial.print(*p++, HEX);
 		//USBHDBGSerial.print(' ');
 	} while (--len);

@@ -23,13 +23,14 @@
 
 #include <Arduino.h>
 #include "USBHost_t36.h"  // Read this header first for key info
+#include "../avr/pgmspace.h"
 
 #define print   USBHost::print_
 #define println USBHost::println_
 
 //#define DEBUG_JOYSTICK
 #ifdef  DEBUG_JOYSTICK
-#define DBGPrintf USBHDBGSerial.printf
+#define DBGPrintf //USBHDBGSerial.printf
 #else
 #define DBGPrintf(...) 
 #endif
@@ -527,9 +528,9 @@ bool JoystickController::hid_process_in_data(const Transfer_t *transfer)
 	uint8_t *pb = (uint8_t *)transfer->buffer;
 	if (!transfer->buffer || *pb == 1) return false; // don't do report 1
 	//Serial.printf("hid_process_in_data %x %u:", transfer->buffer, transfer->length);
-	uint8_t cnt = transfer->length;
-	if (cnt > 16) cnt = 16;
-	while(cnt--) Serial.printf(" %02x", *pb++);
+	//uint8_t cnt = transfer->length;
+	//if (cnt > 16) cnt = 16;
+	//while(cnt--) Serial.printf(" %02x", *pb++);
 	//Serial.printf("\n");
 
 	return false;
@@ -537,12 +538,12 @@ bool JoystickController::hid_process_in_data(const Transfer_t *transfer)
 
 bool JoystickController::hid_process_control(const Transfer_t *transfer) {
 	//Serial.printf("USBHIDParser::control msg: %x %x : %x %u :", transfer->setup.word1, transfer->setup.word2, transfer->buffer, transfer->length);
-	if (transfer->buffer) {
-		uint16_t cnt = transfer->length;
-		if (cnt > 16) cnt = 16;
-		uint8_t *pb = (uint8_t*)transfer->buffer;
-		while (cnt--) Serial.printf(" %02x", *pb++);
-	}
+	//if (transfer->buffer) {
+		//uint16_t cnt = transfer->length;
+		//if (cnt > 16) cnt = 16;
+		//uint8_t *pb = (uint8_t*)transfer->buffer;
+		//while (cnt--) Serial.printf(" %02x", *pb++);
+	//}
 	//Serial.printf("\n");
 	send_Control_packet_active_ = false;
 	return false;

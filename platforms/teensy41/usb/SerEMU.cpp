@@ -161,8 +161,8 @@ int USBSerialEmu::availableForWrite()
 size_t USBSerialEmu::write(uint8_t c)
 {
 	// Single buffer, as our HID device has double buffers. 
-	if (c >= ' ') USBHDBGSerial.printf("SEMU: %c\n", c);
-	else USBHDBGSerial.printf("SEMU: 0x%x\n", c);
+	//if (c >= ' ') //USBHDBGSerial.printf("SEMU: %c\n", c);
+	//else //USBHDBGSerial.printf("SEMU: 0x%x\n", c);
 
 
 	if (!driver_) return 0;
@@ -220,7 +220,7 @@ void USBSerialEmu::hid_input_data(uint32_t usage, int32_t value)
 	// allowing the parse to happen
 #ifdef SEREMU_PRINT_DEBUG
 	//USBHDBGSerial.printf("SerEMU: usage=%X, value=%d", usage, value);
-	if ((value >= ' ') && (value <='~')) USBHDBGSerial.printf("(%c)", value);
+	if ((value >= ' ') && (value <='~')) //USBHDBGSerial.printf("(%c)", value);
 	//USBHDBGSerial.println();
 #endif
 }

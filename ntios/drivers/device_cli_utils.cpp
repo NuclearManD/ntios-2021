@@ -23,14 +23,14 @@ int __ntios_device_cli_utils(int argc, const char** argv, StreamDevice* io) {
 		}
 		for (int i = 0; i < num_devices(); i++) {
 			Device* dev = get_device(i);
-			io->printf("%i %p\n", i, dev);
-			io->printf("%i\n", strlen(dev->getName()));
-			io->printf("%s\n", dev->getName());
-			io->printf("%03x\n", (int)dev->getType());
+			//io->printf("%i %p\n", i, dev);
+			//io->printf("%i\n", strlen(dev->getName()));
+			//io->printf("%s\n", dev->getName());
+			//io->printf("%03x\n", (int)dev->getType());
 
 			if (dev != NULL) {
 				int type = dev->getType();
-				io->printf("%p\n", dev->getName());
+				//io->printf("%p\n", dev->getName());
 				io->printf("%02i type %03x %-20s \"%s\"\n", i, type, devTypeToStr(type), dev->getName());
 			} else
 				io->printf("[ERROR: DEVICE %i IS NULL]\n", i);

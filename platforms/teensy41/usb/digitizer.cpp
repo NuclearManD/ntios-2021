@@ -81,7 +81,7 @@ void DigitizerController::hid_input_data(uint32_t usage, int32_t value)
 		digiAxes[usage & 0xf] = value;
 	}
 	if (usage_page == 0xff0D) {
-		if (usage >= 0 && usage < 0x138) { //at least to start
+		if (/*usage >= 0 &&*/ usage < 0x138) { //at least to start
 			switch (usage) {
 			  case 0x130: 
 				mouseX = value;

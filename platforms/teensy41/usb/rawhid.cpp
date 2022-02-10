@@ -104,7 +104,7 @@ void RawHIDController::hid_input_data(uint32_t usage, int32_t value)
 	// allowing the parse to happen
 #ifdef USBHOST_PRINT_DEBUG
 	//USBHDBGSerial.printf("RawHID: usage=%X, value=%d", usage, value);
-	if ((value >= ' ') && (value <='~')) USBHDBGSerial.printf("(%c)", value);
+	if ((value >= ' ') && (value <='~')) //USBHDBGSerial.printf("(%c)", value);
 	//USBHDBGSerial.println();
 #endif
 }

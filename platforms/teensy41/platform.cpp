@@ -3,8 +3,18 @@
 #include "usb_serial.h"
 #include "HardwareSerial.h"
 #include "SdioTeensy.h"
+#include "usb/USBHost_t36.h"
 
 #include <string.h>
+
+USBHost myusb;
+USBHub hub1(myusb);
+USBHub hub2(myusb);
+KeyboardController keyboard1(myusb);
+MouseController mouse1(myusb);
+USBHIDParser hid0(myusb);
+USBHIDParser hid1(myusb);
+//MIDIDevice midi1(myusb);
 
 
 static SdioCard builtinSdCard;
@@ -20,7 +30,7 @@ extern HardwareSerial Serial8;
 _get_devices_retval_t _platform_get_devices() {
 	_get_devices_retval_t result;
 
-	result.device_list = (Device**)malloc(sizeof(Device*) * 10);
+	result.device_list = (Device**)malloc(sizeof(Device*) * 11);
 	result.device_list[0] = &Serial;
 	result.device_list[1] = &Serial1;
 	result.device_list[2] = &Serial2;
@@ -31,10 +41,8 @@ _get_devices_retval_t _platform_get_devices() {
 	result.device_list[7] = &Serial7;
 	result.device_list[8] = &Serial8;
 	result.device_list[9] = &builtinSdCard;
-	for(int i = 0; i < 10; i++) {
-		//Serial.printf("%i %p\n", i, result.device_list[i]);
-	}
-	result.num_devices = 10;
+	result.device_list[10] = &keyboard1;
+	result.num_devices = 11;
 	result.primary_stream = &Serial;
 	result.was_init_ok = true;
 	return result;

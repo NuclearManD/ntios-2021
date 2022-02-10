@@ -138,7 +138,7 @@ bool MouseController::process_bluetooth_HID_data(const uint8_t *data, uint16_t l
 	const uint8_t *p = (const uint8_t *)data;
 	uint16_t len = length;
 	do {
-		if (*p < 16) USBHDBGSerial.print('0');
+		if (*p < 16) //USBHDBGSerial.print('0');
 		//USBHDBGSerial.print(*p++, HEX);
 		//USBHDBGSerial.print(' ');
 	} while (--len);

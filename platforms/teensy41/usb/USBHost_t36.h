@@ -329,35 +329,35 @@ protected:
 	static void print_config_descriptor(const uint8_t *p, uint32_t maxlen);
 	static void print_string_descriptor(const char *name, const uint8_t *p);
 	static void print_hexbytes(const void *ptr, uint32_t len);
-	static void print_(const char *s)	{ USBHDBGSerial.print(s); }
-	static void print_(int n)		{ USBHDBGSerial.print(n); }
-	static void print_(unsigned int n)	{ USBHDBGSerial.print(n); }
-	static void print_(long n)		{ USBHDBGSerial.print(n); }
-	static void print_(unsigned long n)	{ USBHDBGSerial.print(n); }
-	static void println_(const char *s)	{ USBHDBGSerial.println(s); }
-	static void println_(int n)		{ USBHDBGSerial.println(n); }
-	static void println_(unsigned int n)	{ USBHDBGSerial.println(n); }
-	static void println_(long n)		{ USBHDBGSerial.println(n); }
-	static void println_(unsigned long n)	{ USBHDBGSerial.println(n); }
-	static void println_()			{ USBHDBGSerial.println(); }
-	static void print_(uint32_t n, uint8_t b) { USBHDBGSerial.print(n, b); }
-	static void println_(uint32_t n, uint8_t b) { USBHDBGSerial.println(n, b); }
+	static void print_(const char *s)	{ //USBHDBGSerial.print(s); }
+	static void print_(int n)		{ //USBHDBGSerial.print(n); }
+	static void print_(unsigned int n)	{ //USBHDBGSerial.print(n); }
+	static void print_(long n)		{ //USBHDBGSerial.print(n); }
+	static void print_(unsigned long n)	{ //USBHDBGSerial.print(n); }
+	static void println_(const char *s)	{ //USBHDBGSerial.println(s); }
+	static void println_(int n)		{ //USBHDBGSerial.println(n); }
+	static void println_(unsigned int n)	{ //USBHDBGSerial.println(n); }
+	static void println_(long n)		{ //USBHDBGSerial.println(n); }
+	static void println_(unsigned long n)	{ //USBHDBGSerial.println(n); }
+	static void println_()			{ //USBHDBGSerial.println(); }
+	static void print_(uint32_t n, uint8_t b) { //USBHDBGSerial.print(n, b); }
+	static void println_(uint32_t n, uint8_t b) { //USBHDBGSerial.println(n, b); }
 	static void print_(const char *s, int n, uint8_t b = DEC) {
-		//USBHDBGSerial.print(s); USBHDBGSerial.print(n, b); }
+		//USBHDBGSerial.print(s); //USBHDBGSerial.print(n, b); }
 	static void print_(const char *s, unsigned int n, uint8_t b = DEC) {
-		//USBHDBGSerial.print(s); USBHDBGSerial.print(n, b); }
+		//USBHDBGSerial.print(s); //USBHDBGSerial.print(n, b); }
 	static void print_(const char *s, long n, uint8_t b = DEC) {
-		//USBHDBGSerial.print(s); USBHDBGSerial.print(n, b); }
+		//USBHDBGSerial.print(s); //USBHDBGSerial.print(n, b); }
 	static void print_(const char *s, unsigned long n, uint8_t b = DEC) {
-		//USBHDBGSerial.print(s); USBHDBGSerial.print(n, b); }
+		//USBHDBGSerial.print(s); //USBHDBGSerial.print(n, b); }
 	static void println_(const char *s, int n, uint8_t b = DEC) {
-		//USBHDBGSerial.print(s); USBHDBGSerial.println(n, b); }
+		//USBHDBGSerial.print(s); //USBHDBGSerial.println(n, b); }
 	static void println_(const char *s, unsigned int n, uint8_t b = DEC) {
-		//USBHDBGSerial.print(s); USBHDBGSerial.println(n, b); }
+		//USBHDBGSerial.print(s); //USBHDBGSerial.println(n, b); }
 	static void println_(const char *s, long n, uint8_t b = DEC) {
-		//USBHDBGSerial.print(s); USBHDBGSerial.println(n, b); }
+		//USBHDBGSerial.print(s); //USBHDBGSerial.println(n, b); }
 	static void println_(const char *s, unsigned long n, uint8_t b = DEC) {
-		//USBHDBGSerial.print(s); USBHDBGSerial.println(n, b); }
+		//USBHDBGSerial.print(s); //USBHDBGSerial.println(n, b); }
 	friend class USBDriverTimer; // for access to print & println
 #else
 	static void print_(const Transfer_t *transfer) {}
@@ -445,7 +445,7 @@ protected:
 	//   device has its vid&pid, class/subclass fields initialized
 	//   type is 0 for device level, 1 for interface level, 2 for IAD
 	//   descriptors points to the specific descriptor data
-	virtual bool claim(Device_t *device, int type, const uint8_t *descriptors, uint32_t len);
+	virtual bool claim(Device_t *device, int type, const uint8_t *descriptors, uint32_t len) = 0;
 
 	// When an unknown (not chapter 9) control transfer completes, this
 	// function is called for all drivers bound to the device.  Return
@@ -470,7 +470,7 @@ protected:
 	// code continuing to call its API.  However, pipes and transfers
 	// are the handled by lower layers, so device drivers do not free
 	// pipes they created or cancel transfers they had in progress.
-	virtual void disconnect();
+	virtual void disconnect() = 0;
 
 	// Drivers are managed by this single-linked list.  All inactive
 	// (not bound to any device) drivers are linked from
@@ -528,14 +528,14 @@ public:
 
 
 private:
-	virtual hidclaim_t claim_collection(USBHIDParser *driver, Device_t *dev, uint32_t topusage);
+	virtual hidclaim_t claim_collection(USBHIDParser *driver, Device_t *dev, uint32_t topusage) = 0;
 	virtual bool hid_process_in_data(const Transfer_t *transfer) {return false;}
 	virtual bool hid_process_out_data(const Transfer_t *transfer) {return false;}
 	virtual bool hid_process_control(const Transfer_t *transfer) {return false;}
-	virtual void hid_input_begin(uint32_t topusage, uint32_t type, int lgmin, int lgmax);
-	virtual void hid_input_data(uint32_t usage, int32_t value);
-	virtual void hid_input_end();
-	virtual void disconnect_collection(Device_t *dev);
+	virtual void hid_input_begin(uint32_t topusage, uint32_t type, int lgmin, int lgmax) = 0;
+	virtual void hid_input_data(uint32_t usage, int32_t value) = 0;
+	virtual void hid_input_end() = 0;
+	virtual void disconnect_collection(Device_t *dev) = 0;
 	virtual void hid_timer_event(USBDriverTimer *whichTimer) { }
 	void add_to_list();
 	USBHIDInput *next = NULL;
@@ -730,6 +730,8 @@ private:
 
 //--------------------------------------------------------------------------
 
+#define KBD_BUFFER_SZ 1024
+
 class KeyboardController : public USBDriver , public USBHIDInput, public BTHIDInput, public KeyboardDevice {
 public:
 typedef union {
@@ -746,6 +748,11 @@ typedef union {
 public:
 	KeyboardController(USBHost &host) { init(); }
 	KeyboardController(USBHost *host) { init(); }
+
+	virtual int available();
+	virtual int peek();
+	virtual const char* getName();
+	virtual int read();
 
 	// need their own versions as both USBDriver and USBHIDInput provide
 	uint16_t idVendor();
@@ -803,7 +810,6 @@ protected:	// HID functions for extra keyboard data.
 	virtual void disconnect_collection(Device_t *dev);
 
 private:
-	void update();
 	uint16_t convert_to_unicode(uint32_t mod, uint32_t key);
 	void key_press(uint32_t mod, uint32_t key);
 	void key_release(uint32_t mod, uint32_t key);
@@ -834,6 +840,10 @@ private:
 	uint16_t keys_down[MAX_KEYS_DOWN];
 	bool 	force_boot_protocol;  // User or VID/PID said force boot protocol?
 	bool control_queued;
+
+	volatile int keyboard_buffer[KBD_BUFFER_SZ];
+	volatile int keyboard_buffer_size = 0;
+	volatile int keyboard_buffer_idx = 0;
 };
 
 

@@ -408,7 +408,9 @@ bool USBSerialBase::check_rxtx_ep(uint32_t &rxep, uint32_t &txep)
 		return true;
 	}
 	if (rxdir == 0x00 && txdir == 0x80) {
-		std::swap(rxep, txep);
+		uint32_t tmp = rxdir;
+		rxdir = txdir;
+		txdir = tmp;
 		return true;
 	}
 	return false;

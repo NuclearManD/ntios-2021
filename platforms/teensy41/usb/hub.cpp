@@ -61,8 +61,8 @@ bool USBHub::claim(Device_t *dev, int type, const uint8_t *d, uint32_t len)
 	while (len >= 16) {
 		if (d[0] == 9 && d[1] == 4 &&		// valid interface descriptor
 		  d[4] == 1 &&				// has 1 endpoint
-		  d[5] == 9 &&				// bInterfaceClass is HUB type
-		  d[7] >= 0 && d[7] <= 2 &&		// bInterfaceProtocol is ok
+		  d[5] == 9 /*&&				// bInterfaceClass is HUB type
+		  d[7] >= 0*/ && d[7] <= 2 &&		// bInterfaceProtocol is ok
 		  d[9] == 7 && d[10] == 5 &&		// valid endpoint descriptor
 		  (d[11] & 0xF0) == 0x80 &&		// endpoint direction is IN
 		  d[12] == 3 &&				// endpoint type is interrupt
