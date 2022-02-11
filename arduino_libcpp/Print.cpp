@@ -227,4 +227,51 @@ size_t Print::printFloat(double number, uint8_t digits)
 	return count;
 }
 
+size_t Print::printHexTable(uint32_t offset, const uint8_t* data, uint32_t length, bool printHeader) {
+	size_t chars_written = 0;
+	if (printHeader) {
+		chars_written += printf("          ");
+		for (uint8_t i = 0; i < 16; i++) {
+			chars_written += printf(" %01x ", (unsigned int)(i + offset) & 15);
+			if (i == 7)
+				chars_written += write(' ');
+		}
+		chars_written += println();
+	}
+
+	while (length > 0) {
+		// Read some data from the file
+		int readsize = length > 16 ? 16 : length;
+
+		// Print out the hex data
+		chars_written += printf("%08x  ", offset);
+		for (int i = 0; i < readsize; i++) {
+			chars_written += printf("%02x ", data[i]);
+			if (i == 7)
+				chars_written += write(' ');
+		}
+
+		// Padding for any misaligned data (ex: file ends with only 5 bytes
+		for (int i = 0; i < (16 - readsize) * 3 + 1; i++)
+			chars_written += write(' ');
+		if (length < 8)
+			chars_written += write(' ');
+
+		// Print character column
+		chars_written += write('|');
+		for (int i = 0; i < readsize; i++) {
+			char c = data[i];
+			if (c >= ' ' && c < 127)
+				chars_written += write(c);
+			else
+				chars_written += write('.');
+		}
+		chars_written += println("|");
+
+		offset += readsize;
+		length -= readsize;
+		data = &(data[readsize]);
+	}
+	return chars_written;
+}
 
