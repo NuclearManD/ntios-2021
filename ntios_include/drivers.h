@@ -26,6 +26,11 @@
 #define ERR_NOT_CONNECTED -15
 #define ERR_UNSUPPORTED -16
 #define ERR_OUT_OF_BOUNDS -17
+#define ERR_HW_NOT_OPERATIONAL -18
+#define ERR_WRONG_FS -19
+#define ERR_FS_CORRUPT -20
+#define ERR_READ_FAILED -21
+#define ERR_WRITE_FAILED -22
 
 #define DEV_TYPE_STREAM 0x100
 #define DEV_TYPE_FILESYSTEM 0x200
@@ -118,7 +123,7 @@ public:
 class FileSystemDevice: public Device {
 public:
 	int getType();
-	virtual void mount() = 0;
+	virtual int mount() = 0;
 	virtual void unmount() = 0;
 	virtual NTIOSFile* open(const char *filename, uint8_t mode = NTIOS_READ) = 0;
 	NTIOSFile* open(const String &filename, uint8_t mode = NTIOS_READ) {
