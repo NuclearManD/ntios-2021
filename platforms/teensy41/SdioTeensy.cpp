@@ -30,7 +30,7 @@
 
 //==============================================================================
 // limit of K66 due to errata KINETIS_K_0N65N.
-const uint32_t MAX_BLKCNT = 0XFFFF;
+const uint32_t MAX_BLKCNT = 0xFFFF;
 //==============================================================================
 #define SDHC_PROCTL_DTW_4BIT 0x01
 const uint32_t FIFO_WML = 16;

@@ -5,6 +5,7 @@
 #include "ntios.h"
 #include "navigation.h"
 #include "actuation.h"
+#include "blockdevice.h"
 
 // TODO: not use these globals in this file directly
 
@@ -245,6 +246,38 @@ int __ntios_device_cli_utils(int argc, const char** argv, StreamDevice* io) {
 							}
 						}
 					}
+				}
+			}
+		}
+	} else if (strcmp(cmd, "rdsector") == 0) {
+		if (argc < 3) {
+			io->println("Usage: rdsector DEV SECTOR");
+			result = -1;
+		} else {
+			char* echk;
+			int port = (int)strtol(argv[1], &echk, 10);
+			if (*echk != 0 || argv[2][0] == 0 || port < 0 || port >= num_devices()) {
+				io->printf("Error: bad device id '%s'\n", argv[2]);
+				result = -2;
+			} else if ((get_device(port)->getType() & 0xFF00) != DEV_TYPE_BLOCK_DEVICE) {
+				io->println("Error: Not a block device.");
+				result = -3;
+			} else {
+				int sector_num = (int)strtol(argv[2], &echk, 10);
+				if (*echk != 0 || argv[2][0] == 0 || sector_num < 0) {
+					io->printf("Error: bad sector number '%s'\n", argv[2]);
+					result = -4;
+				} else {
+					BlockDevice* dev = (BlockDevice*)get_device(port);
+					uint8_t* sector = (uint8_t*)malloc(512);
+					if (!dev->readSector(sector_num, sector)) {
+						result = ERR_READ_FAILED;
+						io->printf("Block device %i failed to read sector %i", port, sector_num);
+					} else {
+						io->printHexTable(sector_num*512, sector, 512);
+						result = 0;
+					}
+					free(sector);
 				}
 			}
 		}

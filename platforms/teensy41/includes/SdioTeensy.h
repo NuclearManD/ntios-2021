@@ -49,6 +49,9 @@ public:
 	 * \return true for success or false for failure.
 	 */
 	bool begin(SdioConfig sdioConfig);
+	bool begin() {
+		return begin(SdioConfig(FIFO_SDIO)) && !errorCode();
+	}
 	/** CMD6 Switch mode: Check Function Set Function.
 	 * \param[in] arg CMD6 argument.
 	 * \param[out] status return status data.

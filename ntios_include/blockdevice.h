@@ -19,6 +19,9 @@ class BlockDevice: public Device {
 public:
 	virtual ~BlockDevice() {}
 
+	/** start the device, check if operational */
+	virtual bool begin() = 0;
+
 	/** end use of device */
 	virtual void end() {}
 
