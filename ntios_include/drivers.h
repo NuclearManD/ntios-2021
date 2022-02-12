@@ -152,6 +152,8 @@ public:
 	bool rmdir(const String &filepath) {
 		return rmdir(filepath.c_str());
 	}
+
+	virtual ~FileSystemDevice() {}
 };
 
 class I2CBusDevice: public Device {
