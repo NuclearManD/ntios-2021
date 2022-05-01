@@ -3,6 +3,7 @@
 //
 
 #include "drivers/filesystems/fat32.h"
+#include "ntios.h"
 
 
 Fat32Driver::Fat32Driver(BlockDevice* disk, uint32_t start, uint32_t length) {
@@ -36,7 +37,7 @@ int Fat32Driver::mount() {
 		return ERR_FS_CORRUPT;*/
 
 	sectors_per_cluster = sector0[0x0d];
-	reserved_sectors = LI_TO_UINT16(&sector0[0x0e]);
+	/*reserved_sectors = LI_TO_UINT16(&sector0[0x0e]);
 	fat_count = sector0[0x10];
 	num_root_entries = LI_TO_UINT16(&sector0[0x11]);
 	total_sectors = LI_TO_UINT16(&sector0[0x13]);
@@ -45,7 +46,7 @@ int Fat32Driver::mount() {
 
 	sectors_per_fat = LI_TO_UINT32(&sector0[0x24]);
 	root_cluster = LI_TO_UINT32(&sector0[0x2c]);
-	fsinfo_sector = LI_TO_UINT16(&sector0[0x30]);
+	fsinfo_sector = LI_TO_UINT16(&sector0[0x30]);*/
 
 	return 0;
 }

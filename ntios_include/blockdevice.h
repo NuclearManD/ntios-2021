@@ -19,7 +19,9 @@ class BlockDevice: public Device {
 public:
 	virtual ~BlockDevice() {}
 
-	/** start the device, check if operational */
+	/** start the device, check if operational.
+	 * \return true if begin succeeded or if begin was already called, false if failure
+	 */
 	virtual bool begin() = 0;
 
 	/** end use of device */
@@ -50,7 +52,9 @@ public:
 	 */
 	virtual bool readSectors(uint32_t sector, uint8_t* dst, size_t ns) = 0;
 
-	/** \return device size in sectors. */
+	/**
+	 * This MUST work before and after begin() is called
+	 * \return device size in sectors.*/
 	virtual uint32_t sectorCount() = 0;
 
 	/** End multi-sector transfer and go to idle state.

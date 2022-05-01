@@ -10,9 +10,11 @@
 #include "actuation.h"
 #include "actuator_control/control_system.h"
 #include "exec.h"
+#include "blockdevice.h"
 
 #include "drivers/graphics/graphics.h"
 #include "drivers/device_cli_utils.h"
+#include "drivers/disks.h"
 #include "crypto/sha256.h"
 
 bool check_os_stall() {
@@ -312,6 +314,47 @@ int b_hexdump(StreamDevice* io, int argc, const char** argv) {
 	return 0;
 }
 
+int b_disk(StreamDevice* io, int argc, const char** argv) {
+	if (argc < 2) {
+		// List disks
+		BlockDevice* dev;
+		for (int i = 0; i < num_devices(); i++) {
+			Device* dev_tmp = get_device(i);
+			if ((dev_tmp->getType() & 0xFF80) == DEV_TYPE_BLOCK_DEVICE) {
+				dev = (BlockDevice*)dev_tmp;
+				// Print information about the device
+				io->printf("\nDevice %i - %s:\n", i, dev->getName());
+				io->printf("  Size: %lu sectors\n", dev->sectorCount());
+				if (dev->begin()) {
+					PartitionedDisk partitionedDisk;
+					int partitionBeginCode = partitionedDisk.begin(dev);
+					if (partitionBeginCode == 0) {
+						io->printf("  Partitions:\n  id       start         end      length  size(GiB)  type\n");
+						for (uint32_t j = 0; j < partitionedDisk.numPartitions(); j++) {
+							Partition &partition = partitionedDisk.getPartition(j);
+							io->printf("  % 2i % 11llu % 11llu % 11llu % 9f  ", j,
+									   partition.getStart(),
+									   partition.getEnd(),
+									   partition.getLength(),
+									   partition.getSizeGiB()
+							);
+							io->println(partition.getTypeAsStr());
+						}
+					} else {
+						io->printf("  This device opened successfully, but couldn't read partitions.  Code %i\n", partitionBeginCode);
+					}
+				} else {
+					io->printf("  Could not open device.\n");
+				}
+			}
+		}
+		io->write('\n');
+		return 0;
+	}
+	printf("Unknown usage.\n");
+	return 1;
+}
+
 char backslash_delimit(char c){
 	switch(c){
 		case 'n':
@@ -413,6 +456,8 @@ int ntios_system(int argc, char** argv, StreamDevice* io) {
 		result = b_te(io, argc, argv);
 	else if (strcmp(cmd, "hexdump") == 0)
 		result = b_hexdump(io, argc, (const char**)argv);
+	else if (strcmp(cmd, "disk") == 0)
+		result = b_disk(io, argc, (const char**)argv);
 	else if (strcmp(cmd, "mkdir") == 0) {
 		if (argc == 2) {
 			if ((result = fsmkdir(argv[1])))

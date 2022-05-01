@@ -647,6 +647,9 @@ static bool waitTransferComplete() {
 bool SdioCard::begin(SdioConfig sdioConfig) {
   uint32_t kHzSdClk;
   uint32_t arg;
+
+  if (m_initDone) return true;
+
   m_sdioConfig = sdioConfig;
   m_curState = IDLE_STATE;
   m_initDone = false;

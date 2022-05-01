@@ -5,6 +5,7 @@
 #include "drivers/disks.h"
 #include "drivers/filesystems/exfat.h"
 #include "stdint.h"
+#include "ntios.h"
 
 Partition::Partition(const char* typeName, uint64_t start, uint64_t partitionLength, bool isHealthy, FileSystemDevice* fs) {
 	firstSector = start;

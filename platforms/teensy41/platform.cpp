@@ -19,8 +19,6 @@ USBHIDParser hid1(myusb);
 
 
 static SdioCard builtinSdCard;
-// This way of initializing a filesystem will be deprecated soon.
-static PartitionedDisk sdCardAsDisk;
 extern HardwareSerial Serial1;
 extern HardwareSerial Serial2;
 extern HardwareSerial Serial3;
@@ -65,36 +63,6 @@ _get_devices_retval_t _platform_get_devices() {
 	result.num_devices = 11;
 	result.primary_stream = &Serial;
 	result.was_init_ok = true;
-
-	//csd_t m_csd;
-	//uint32_t m_eraseSize;
-	//uint32_t m_ocr;
-
-	if (builtinSdCard.readCID(&m_cid))
-		cidDmp();
-	else
-		Serial.println("Failed to read CID");
-
-	sdCardAsDisk.begin(&builtinSdCard);
-	Serial.printf("Disk type: %s\n", sdCardAsDisk.diskRecordTypeAsStr());
-	Serial.printf("%i Partitions:\n", sdCardAsDisk.numPartitions());
-	for (uint32_t i = 0; i < sdCardAsDisk.numPartitions(); i++) {
-		Partition& partition = sdCardAsDisk.getPartition(i);
-		/*Serial.printf("Partition %u: % 8u-% 8u (%u sectors, %f GiB) type %s\n", i,
-					partition.getStart(),
-					partition.getEnd(),
-					partition.getLength(),
-					partition.getSizeGiB(),
-					"" //partition.getTypeAsStr()
-				);*/
-		Serial.printf("Partition %u: %llu-%llu (%llu sectors, %f GiB) type ", i,
-					  partition.getStart(),
-					  partition.getEnd(),
-					  partition.getLength(),
-					  partition.getSizeGiB()
-		);
-		Serial.println(partition.getTypeAsStr());
-	}
 
 	return result;
 }
