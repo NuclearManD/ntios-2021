@@ -6,8 +6,6 @@
 #include "drivers/filesystems/exfat.h"
 #include "stdint.h"
 
-#define LI_TO_UINT32(x) x[0] | ((uint32_t)x[1] << 8) |((uint32_t)x[2] << 16) |((uint32_t)x[3] << 24)
-
 Partition::Partition(const char* typeName, uint64_t start, uint64_t partitionLength, bool isHealthy, FileSystemDevice* fs) {
 	firstSector = start;
 	lastSector = start + partitionLength - 1;
@@ -65,7 +63,7 @@ int PartitionedDisk::begin(BlockDevice* disk) {
 		} else if (partition_type == 0x07) {
 			// ExFAT
 			FileSystemDevice* fs = new ExFatDriver(disk, lba_start, num_sectors);
-			bool isHealthy = fs->mount();
+			bool isHealthy = fs->mount() == 0;
 			mbrPartitionsTmp[n++] =Partition("ExFAT", lba_start, num_sectors, isHealthy, fs);
 			n++;
 		}

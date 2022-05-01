@@ -63,7 +63,12 @@
 	#define CPU_ARCH UNKNOWN
 #endif
 
+#define LI_TO_UINT32(x) x[0] | ((uint32_t)x[1] << 8) |((uint32_t)x[2] << 16) |((uint32_t)x[3] << 24)
+#define LI_TO_UINT16(x) x[0] | ((uint16_t)x[1] << 8)
+
 #define DEBUG_PRINTF if(_ntios_debug_port) _ntios_debug_port->printf
+
+
 extern StreamDevice* _ntios_debug_port;
 
 // initialize driver list so OS can run - will set up 
