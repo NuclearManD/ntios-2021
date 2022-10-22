@@ -23,7 +23,7 @@ public:
 	bool remove(const char *filepath);
 	bool rmdir(const char *filepath);
 
-private:
+public:
 	bool readSector(uint64_t sector, uint8_t* dst);
 	bool writeSector(uint64_t sector, uint8_t* src);
 	uint64_t start, end, length;

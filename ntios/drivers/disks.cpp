@@ -4,6 +4,7 @@
 
 #include "drivers/disks.h"
 #include "drivers/filesystems/exfat.h"
+#include "drivers/filesystems/fat32.h"
 #include "stdint.h"
 #include "ntios.h"
 
@@ -59,14 +60,28 @@ int PartitionedDisk::begin(BlockDevice* disk) {
 				mbrPartitionsTmp[n++] = Partition("Invalid GPT entry", lba_start, num_sectors, false, nullptr);
 			}
 		} else if (partition_type == 0x0b || partition_type == 0x0c) {
-			// FAT32.  We don't have a driver for this quite yet.
-			mbrPartitionsTmp[n++] = Partition("FAT32", lba_start, num_sectors, false, nullptr);
+			// FAT32
+			Fat32Driver* fs = new Fat32Driver(disk, lba_start, num_sectors);
+			bool isHealthy = fs->mount() == 0;
+			mbrPartitionsTmp[n++] = Partition("FAT32", lba_start, num_sectors, isHealthy, fs);
 		} else if (partition_type == 0x07) {
 			// ExFAT
-			FileSystemDevice* fs = new ExFatDriver(disk, lba_start, num_sectors);
+			ExFatDriver* fs = new ExFatDriver(disk, lba_start, num_sectors);
 			bool isHealthy = fs->mount() == 0;
-			mbrPartitionsTmp[n++] =Partition("ExFAT", lba_start, num_sectors, isHealthy, fs);
+			mbrPartitionsTmp[n++] = Partition("ExFAT", lba_start, num_sectors, isHealthy, fs);
 			n++;
+		} else if (partition_type == 0x43 || partition_type == 0x83) {
+			mbrPartitionsTmp[n++] = Partition("Linux", lba_start, num_sectors, false, nullptr);
+		} else if (partition_type == 0x93) {
+			mbrPartitionsTmp[n++] = Partition("Linux (hidden)", lba_start, num_sectors, false, nullptr);
+		} else if (partition_type == 0x04 || partition_type == 0x06 || partition_type == 0x0e) {
+			mbrPartitionsTmp[n++] = Partition("FAT16", lba_start, num_sectors, false, nullptr);
+		} else if (partition_type == 0x41 || partition_type == 0x81) {
+			mbrPartitionsTmp[n++] = Partition("Minix", lba_start, num_sectors, false, nullptr);
+		} else if (partition_type == 0x42 || partition_type == 0x82) {
+			mbrPartitionsTmp[n++] = Partition("Linux Swap", lba_start, num_sectors, false, nullptr);
+		} else if (partition_type != 0x00) {
+			mbrPartitionsTmp[n++] = Partition("Unknown", lba_start, num_sectors, false, nullptr);
 		}
 	}
 	num_partitions = n;

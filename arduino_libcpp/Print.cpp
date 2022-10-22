@@ -65,7 +65,7 @@ size_t Print::print(const String &s)
 	return count;
 }
 
-size_t Print::print(long n)
+/*size_t Print::print(long n)
 {
 	uint8_t sign=0;
 
@@ -74,7 +74,7 @@ size_t Print::print(long n)
 		n = -n;
 	}
 	return printNumber(n, 10, sign);
-}
+}*/
 
 size_t Print::print(int64_t n)
 {

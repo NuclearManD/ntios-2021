@@ -20,6 +20,7 @@
 */
 
 #include <Arduino.h>
+#include "avr_functions.h"
 
 
 /*********************************************/

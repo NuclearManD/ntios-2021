@@ -3,6 +3,9 @@
 #include "ntios.h"
 #include "drivers.h"
 #include "navigation.h"
+#include "drivers/disks.h"
+#include "drivers/filesystems/exfat.h"
+#include "drivers/filesystems/fat32.h"
 
 #if defined(ESP32)
 	#include "esp32-hal-cpu.h"
@@ -44,6 +47,47 @@ void ntios_init(Device** devices, int num_devices, StreamDevice* debug) {
 	_ntios_device_count = num_devices;
 
 	_ntios_debug_port = debug;
+
+	// Here we try to guess what partition should be mounted (if any)
+	BlockDevice* dev;
+	FileSystemDevice* rootDevice = nullptr;
+	for (int i = 0; i < num_devices; i++) {
+		Device *dev_tmp = get_device(i);
+		if ((dev_tmp->getType() & 0xFF80) == DEV_TYPE_BLOCK_DEVICE) {
+			dev = (BlockDevice*)dev_tmp;
+			PartitionedDisk partitionedDisk;
+			if (partitionedDisk.begin(dev) == 0) {
+				for (uint32_t j = 0; j < partitionedDisk.numPartitions(); j++) {
+					Partition &partition = partitionedDisk.getPartition(j);
+					if (!strcmp(partition.getTypeAsStr(), "FAT32")) {
+						Fat32Driver* fat = new Fat32Driver(dev, partition.getStart(), partition.getLength());
+						if (fat->mount() == 0) {
+							rootDevice = fat;
+							DEBUG_PRINTF("sectors_per_cluster: %u\n", fat->sectors_per_cluster);
+							DEBUG_PRINTF("reserved_sectors: %u\n", fat->reserved_sectors);
+							DEBUG_PRINTF("fat_count: %hhu\n", fat->fat_count);
+							DEBUG_PRINTF("num_root_entries: %u\n", fat->num_root_entries);
+							DEBUG_PRINTF("total_sectors: %lu\n", fat->total_sectors);
+							DEBUG_PRINTF("sectors_per_fat: %lu\n", fat->sectors_per_fat);
+							DEBUG_PRINTF("root_cluster: %lu\n", fat->root_cluster);
+							DEBUG_PRINTF("fsinfo_sector: %u\n", fat->fsinfo_sector);
+							break;
+						} else {
+							delete fat;
+						}
+					}
+				}
+			}
+		}
+		if (rootDevice) break;
+	}
+	if (rootDevice) {
+		// Root filesystem partition found, add to virtual device list and set up filesystem
+		int partitionDeviceId = add_device(rootDevice);
+		mount(partitionDeviceId, "/");
+		DEBUG_PRINTF("Mounted filesystem.\n");
+	}
+
 	DEBUG_PRINTF("NTIOS Initialized.\n");
 	
 	if(start_function(_ntios_nav_updater_thread, NULL, 8192)) {

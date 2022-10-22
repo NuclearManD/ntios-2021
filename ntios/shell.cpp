@@ -324,8 +324,8 @@ int b_disk(StreamDevice* io, int argc, const char** argv) {
 				dev = (BlockDevice*)dev_tmp;
 				// Print information about the device
 				io->printf("\nDevice %i - %s:\n", i, dev->getName());
-				io->printf("  Size: %lu sectors\n", dev->sectorCount());
 				if (dev->begin()) {
+					io->printf("  Size: %lu sectors\n", dev->sectorCount());
 					PartitionedDisk partitionedDisk;
 					int partitionBeginCode = partitionedDisk.begin(dev);
 					if (partitionBeginCode == 0) {

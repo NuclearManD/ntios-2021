@@ -5,6 +5,7 @@
 #include "SdioTeensy.h"
 #include "usb/USBHost_t36.h"
 #include "drivers/disks.h"
+#include "drivers/filesystems/fat32.h"
 
 #include <string.h>
 

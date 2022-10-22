@@ -68,20 +68,20 @@ class Print
 	size_t print(uint8_t b)				{ return printNumber(b, 10, 0); }
 	size_t print(int n)				{ return print((long)n); }
 	size_t print(unsigned int n)			{ return printNumber(n, 10, 0); }
-#ifndef LONG_IS_64_BITS
-	size_t print(long n);
-	size_t print(unsigned long n)			{ return printNumber(n, 10, 0); }
-#endif
+//#ifndef LONG_IS_64_BITS
+//	size_t print(long n);
+//	size_t print(unsigned long n)			{ return printNumber(n, 10, 0); }
+//#endif
 	size_t print(int64_t n);
 	size_t print(uint64_t n)			{ return printNumber64(n, 10, 0); }
 
 	size_t print(unsigned char n, int base)		{ return printNumber(n, base, 0); }
 	size_t print(int n, int base)			{ return (base == 10) ? print(n) : printNumber(n, base, 0); }
 	size_t print(unsigned int n, int base)		{ return printNumber(n, base, 0); }
-#ifndef LONG_IS_64_BITS
-	size_t print(long n, int base)			{ return (base == 10) ? print(n) : printNumber(n, base, 0); }
-	size_t print(unsigned long n, int base)		{ return printNumber(n, base, 0); }
-#endif
+//#ifndef LONG_IS_64_BITS
+//	size_t print(long n, int base)			{ return (base == 10) ? print(n) : printNumber(n, base, 0); }
+//	size_t print(unsigned long n, int base)		{ return printNumber(n, base, 0); }
+//#endif
 	size_t print(int64_t n, int base)		{ return (base == 10) ? print(n) : printNumber64(n, base, 0); }
 	size_t print(uint64_t n, int base)		{ return printNumber64(n, base, 0); }
 
@@ -96,20 +96,20 @@ class Print
 	size_t println(uint8_t b)			{ return print(b) + println(); }
 	size_t println(int n)				{ return print(n) + println(); }
 	size_t println(unsigned int n)			{ return print(n) + println(); }
-#ifndef LONG_IS_64_BITS
-	size_t println(long n)				{ return print(n) + println(); }
-	size_t println(unsigned long n)			{ return print(n) + println(); }
-#endif
+//#ifndef LONG_IS_64_BITS
+//	size_t println(long n)				{ return print(n) + println(); }
+//	size_t println(unsigned long n)			{ return print(n) + println(); }
+//#endif
 	size_t println(int64_t n)			{ return print(n) + println(); }
 	size_t println(uint64_t n)			{ return print(n) + println(); }
 
 	size_t println(unsigned char n, int base)	{ return print(n, base) + println(); }
 	size_t println(int n, int base)			{ return print(n, base) + println(); }
 	size_t println(unsigned int n, int base)	{ return print(n, base) + println(); }
-#ifndef LONG_IS_64_BITS
-	size_t println(long n, int base)		{ return print(n, base) + println(); }
-	size_t println(unsigned long n, int base)	{ return print(n, base) + println(); }
-#endif
+//#ifndef LONG_IS_64_BITS
+//	size_t println(long n, int base)		{ return print(n, base) + println(); }
+//	size_t println(unsigned long n, int base)	{ return print(n, base) + println(); }
+//#endif
 	size_t println(int64_t n, int base)		{ return print(n, base) + println(); }
 	size_t println(uint64_t n, int base)		{ return print(n, base) + println(); }
 
